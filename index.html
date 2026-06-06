@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TON TV Node Sale - Full Dashboard</title>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=plus-jakarta-sans@400,500,600,700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', 'Pretendard', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #0A0D14;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --primary-glow: #00E676;
+            --ton-blue: #0098EA;
+            --bg-card: #141A29;
+            --bg-card-light: #1E2638;
+            --text-muted: #8A99AD;
+            --border-line: rgba(255, 255, 255, 0.06);
+        }
+
+        /* 공통 스타일 레이아웃 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 100px 0;
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .section-title span {
+            background: linear-gradient(90deg, var(--primary-glow) 0%, var(--ton-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 60px auto;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* 1. 네비게이션 헤더 */
+        header {
+            background: rgba(10, 13, 20, 0.8);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .logo span { color: var(--primary-glow); }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+        }
+
+        nav ul a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav ul a:hover { color: #fff; }
+
+        .btn-connect {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-connect:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* 2. 메인 히어로 & 세일 상태 대시보드 */
+        .hero-section {
+            padding-top: 16px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            background: rgba(0, 230, 118, 0.08);
+            color: var(--primary-glow);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 52px;
+            line-height: 1.25;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -1.5px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(90deg, #00E676 0%, #0098EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .spec-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        .spec-label { color: var(--text-muted); font-size: 14px; margin-bottom: 6px; }
+        .spec-value { font-size: 26px; font-weight: 700; }
+        .spec-value span { color: var(--primary-glow); }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00E676 0%, #0098EA 100%);
+            color: #000;
+            font-weight: 700;
+            font-size: 18px;
+            padding: 20px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 230, 118, 0.15);
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); }
+
+        /* 우측 실시간 텔레그램 미니앱 목업 */
+        .mockup-card {
+            background: linear-gradient(135deg, #161D2B 0%, #0A0D14 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+
+        .mockup-video {
+            width: 100%;
+            height: 260px;
+            background: #020408;
+            border-radius: 16px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            border: 1px solid var(--border-line);
+        }
+
+        /* 3. 티어별 노드 판매 단계 가격표 (Tier System 추가) */
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .tier-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .tier-card.active {
+            border-color: var(--primary-glow);
+            background: linear-gradient(180deg, rgba(0, 230, 118, 0.03) 0%, rgba(20, 26, 41, 1) 100%);
+        }
+
+        .tier-card.active::before {
+            content: "현재 단계";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-glow);
+            color: #000;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .tier-card.soldout {
+            opacity: 0.4;
+        }
+
+        .tier-num { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
+        .tier-price { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .tier-amount { font-size: 13px; color: var(--text-muted); }
+
+        /* 4. 노드 생태계 및 보상 플랜 구조 (Ecosystem 추가) */
+        .eco-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .eco-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 20px;
+            padding: 32px;
+            transition: transform 0.2s;
+        }
+
+        .eco-card:hover { transform: translateY(-4px); }
+
+        .eco-icon {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .eco-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
+        .eco-card p { color: var(--text-muted); font-size: 15px; line-height: 1.6; }
+
+        /* 5. 로드맵 (Roadmap 추가) */
+        .roadmap-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background: var(--border-line);
+            top: 0; bottom: 0; left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .roadmap-item {
+            padding: 20px 40px;
+            position: relative;
+            width: 50%;
+        }
+
+        .roadmap-item.left { left: 0; text-align: right; }
+        .roadmap-item.right { left: 50%; text-align: left; }
+
+        .roadmap-dot {
+            width: 16px; height: 16px;
+            background: var(--ton-blue);
+            border-radius: 50%;
+            position: absolute;
+            top: 28px;
+            z-index: 2;
+        }
+        .roadmap-item.left .roadmap-dot { right: -8px; }
+        .roadmap-item.right .roadmap-dot { left: -8px; }
+
+        .roadmap-content {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border-line);
+        }
+
+        .roadmap-date { color: var(--primary-glow); font-weight: 700; margin-bottom: 8px; }
+
+        /* 6. 자주 묻는 질문 (FAQ 추가) */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 24px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            padding: 0 24px 24px 24px;
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        /* 반응형 스타일 미디어쿼리 */
+        @media (max-width: 968px) {
+            .hero-section, .eco-grid { grid-template-columns: 1fr; text-align: center; }
+            .tier-grid { grid-template-columns: repeat(2, 1fr); }
+            nav { display: none; }
+            .roadmap-timeline::before { left: 40px; }
+            .roadmap-item { width: 100%; text-align: left !important; padding-left: 80px; }
+            .roadmap-item.right { left: 0; }
+            .roadmap-item .roadmap-dot { left: 32px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 헤더 영역 -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo" onclick="window.scrollTo(0,0)">TON<span>TV</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#dashboard">대시보드</a></li>
+                    <li><a href="#tiers">판매단계</a></li>
+                    <li><a href="#ecosystem">노드생태계</a></li>
+                    <li><a href="#roadmap">로드맵</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+            <button class="btn-connect" id="main-wallet-btn" onclick="connectWallet()">지갑 연결하기</button>
+        </div>
+    </header>
+
+    <!-- 히어로 & 대시보드 섹션 -->
+    <section id="dashboard" style="margin-top: 80px;">
+        <div class="container hero-section">
+            <div>
+                <div class="badge">📡 텔레그램 WATCH-TO-EARN 숏폼 드라마 OTT 생태계</div>
+                <h1 class="hero-title">시청이 곧 자산,<br><span>TON TV</span> 노드 세일</h1>
+                <p class="hero-desc">
+                    전 세계 10억 명의 사용자를 보유한 텔레그램 미니앱 생태계 기반 숏폼 콘텐츠 플랫폼입니다. 
+                    드라마 시청, 광고 트래픽 분산 처리에 기여하고 강력한 분배 생태계 주권을 확보하세요.
+                </p>
+
+                <div class="spec-grid">
+                    <div class="spec-card">
+                        <div class="spec-label">현재 노드 가격</div>
+                        <div class="spec-value" style="color: var(--primary-glow);">$1,000</div>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-label">다음 티어 단가</div>
+                        <div class="spec-value">$1,100</div>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-label">현재 티어 완판율</div>
+                        <div class="spec-value"><span>72.9%</span></div>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-label">보상 거버넌스 토큰</div>
+                        <div class="spec-value">XONT</div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="width: 100%;" onclick="buyNode()">노드 신청 및 확정하기</button>
+            </div>
+
+            <div class="mockup-card">
+                <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted);">
+                    <span>⚡ TON TV Web3 Player</span>
+                    <span style="color: var(--primary-glow);">● LIVE</span>
+                </div>
+                <div class="mockup-video">
+                    🎬 [ 원본 노드세일 영상 인터페이스 자리에 연동 ]
+                </div>
+                <h3 style="font-size: 18px; margin-bottom: 8px;">TON TV 인프라 기여 메커니즘</h3>
+                <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 20px;">
+                    노드 소유자는 분산화된 데이터 트래픽 검증 권한과 플랫폼 광고 수익 풀의 지분 배정 권한을 투명하게 획득합니다.
+                </p>
+                <div style="background: rgba(0,152,234,0.08); border: 1px solid rgba(0,152,234,0.2); padding: 16px; border-radius: 12px; text-align: center; color: var(--ton-blue); font-weight: 600;">
+                    💎 현재 네트워크 총 노드 구동 수: 2,188 Node
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 티어별 상세 구조 섹션 -->
+    <section id="tiers">
+        <div class="container">
+            <h2 class="section-title">단계별 <span>티어 가격</span> 안내</h2>
+            <p class="section-desc">노드는 조기 참여자 보호 및 가치 상승을 위해 판매 수량에 따라 가격이 계단식으로 상승하는 구조를 채택하고 있습니다.</p>
+            
+            <div class="tier-grid">
+                <div class="tier-card soldout">
+                    <div class="tier-num">Tier 1 (완판)</div>
+                    <div class="tier-price">$800</div>
+                    <div class="tier-amount">500개 수량 배정</div>
+                </div>
+                <div class="tier-card active">
+                    <div class="tier-num">Tier 2 (진행 중)</div>
+                    <div class="tier-price" style="color: var(--primary-glow);">$1,000</div>
+                    <div class="tier-amount">1,000개 수량 배정</div>
+                </div>
+                <div class="tier-card">
+                    <div class="tier-num">Tier 3</div>
+                    <div class="tier-price">$1,100</div>
+                    <div class="tier-amount">1,000개 수량 배정</div>
+                </div>
+                <div class="tier-card">
+                    <div class="tier-num">Tier 4</div>
+                    <div class="tier-price">$1,250</div>
+                    <div class="tier-amount">1,500개 수량 배정</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 노드 생태계 기능 설명 섹션 -->
+    <section id="ecosystem">
+        <div class="container">
+            <h2 class="section-title">노드 생태계의 <span>3가지 혜택</span></h2>
+            <p class="section-desc">TON TV 노드를 소유함으로써 프로토콜 성장에 따른 가치 분배 체계의 핵심 구성원이 됩니다.</p>
+
+            <div class="eco-grid">
+                <div class="eco-card">
+                    <div class="eco-icon">🚀</div>
+                    <h3>XONT 토큰 데일리 마이닝</h3>
+                    <p>노드를 지갑에 보유하고 분산화 트래픽 검증 활성화를 유지하면, 매일 프로토콜 풀에서 산정된 XONT 거버넌스 토큰 보상이 자동으로 적립됩니다.</p>
+                </div>
+                <div class="eco-card">
+                    <div class="eco-icon">📈</div>
+                    <h3>플랫폼 광고 수익 셰어 Pool</h3>
+                    <p>텔레그램 미니앱 서비스 내에서 전 세계 글로벌 이용자가 광고를 시청하면서 발생한 매출 재원의 일정 비율이 노드 홀더 풀로 스마트 컨트랙트를 통해 배분됩니다.</p>
+                </div>
+                <div class="eco-card">
+                    <div class="eco-icon">🗳️</div>
+                    <h3>거버넌스 투표권 행사</h3>
+                    <p>차기 숏폼 드라마 독점 오리지널 콘텐츠 펀딩 라인업 결정, 신규 토큰 바이백 및 소각 정책 수립 시 노드 지분 비례 의결 권한이 제공됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 로드맵 섹션 -->
+    <section id="roadmap">
+        <div class="container">
+            <h2 class="section-title">TON TV <span>마일스톤 로드맵</span></h2>
+            <p class="section-desc">글로벌 숏폼 OTT 인프라 구축과 토큰 이코노미 확장 전략 일정입니다.</p>
+
+            <div class="roadmap-timeline">
+                <div class="roadmap-item left">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-date">Phase 1</div>
+                        <h4 style="margin-bottom: 8px;">텔레그램 미니앱 알파 빌드</h4>
+                        <p style="color: var(--text-muted); font-size: 14px;">숏폼 드라마 재생 코어 모듈 개발 및 톤체인 월렛 커넥터 기능 프로토타입 구현 완료.</p>
+                    </div>
+                </div>
+                <div class="roadmap-item right">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-date">Phase 2 (Current)</div>
+                        <h4 style="margin-bottom: 8px;">글로벌 노드 세일 런칭</h4>
+                        <p style="color: var(--text-muted); font-size: 14px;">인프라 분산 처리를 위한 노드 배포 시작. 얼리버드 커뮤니티 빌딩 및 파트너십 확장.</p>
+                    </div>
+                </div>
+                <div class="roadmap-item left">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-date">Phase 3</div>
+                        <h4 style="margin-bottom: 8px;">XONT 토큰 TGE 및 거래소 상장</h4>
+                        <p style="color: var(--text-muted); font-size: 14px;">글로벌 메이저 CEX/DEX 유동성 풀 공급 및 노드 채굴 보상 실시간 정산 클레임 기능 오픈.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ 섹션 -->
+    <section id="faq" style="border-bottom: none;">
+        <div class="container">
+            <h2 class="section-title">자주 묻는 <span>질문 (FAQ)</span></h2>
+            <p class="section-desc">노드 구매 및 생태계 운영에 대해 가장 많이 문의하시는 내용입니다.</p>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Q. 구매한 노드는 어디서 확인할 수 있나요?</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        A. 노드 구매 완료 시, 연동하신 TON 체인 지갑 주소로 구매 소유권 데이터가 스마트 컨트랙트에 귀속됩니다. 추후 대시보드 내 [My Node] 탭 혹은 온체인 익스플로러를 통해 소유하신 수량을 직접 조회가 가능합니다.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Q. 노드 구동을 위해 고사양 컴퓨터를 계속 켜두어야 하나요?</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        A. 아닙니다. TON TV 노드는 라이트 노드(Light Node) 가상화 증명 메커니즘을 사용하므로, 복잡한 하드웨어 마이닝 장비나 24시간 켜진 PC가 없어도 지갑 연동 및 프로토콜 활성화 체크만으로 클라우드 기반 처리가 지원됩니다.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Q. 노드 환불이나 타인 양도가 가능한가요?</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        A. 블록체인 스마트 컨트랙트 특성상 결제 및 배정이 완료된 트랜잭션은 환불이 불가능합니다. 단, TGE 이후 공식 양도 기능 또는 NFT 홀더 마켓플레이스 런칭 계획에 따라 지갑 간 양도 기능이 프로토콜 로드맵에 따라 지원될 예정입니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background: #06080D; padding: 40px 0; text-align: center; color: var(--text-muted); font-size: 14px; border-top: 1px solid var(--border-line);">
+        <p>© 2026 TON TV Node Distribution Foundation. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // 지갑 연동 
+        function connectWallet() {
+            alert("TON 지갑(Tonkeeper, MyTonWallet 등) 연동 허가 요청을 보냅니다.");
+            const btn = document.getElementById("main-wallet-btn");
+            btn.innerText = "UQAz...88dB 연결됨";
+            btn.style.borderColor = "var(--primary-glow)";
+        }
+
+        // 노드 구매 프로세스
+        function buyNode() {
+            alert("노드 구매 및 스마트 컨트랙트 서명 신청 창으로 진입합니다.\n(지갑 연결이 선행되어야 정상적인 컨트랙트 호출이 가능합니다.)");
+        }
+
+        // FAQ 아코디언 컴포넌트 인터랙션
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const arrow = element.querySelectorAll('span')[1];
+            
+            if (answer.style.display === "block") {
+                answer.style.display = "none";
+                arrow.innerText = "▼";
+            } else {
+                answer.style.display = "block";
+                arrow.style.transform = "rotate(180deg)";
+                arrow.innerText = "▼";
+            }
+        }
+    </style>
+</body>
+</html>
