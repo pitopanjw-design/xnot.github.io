@@ -12,9 +12,8 @@
             width: 100%;
             height: 100%;
             font-family: 'Malgun Gothic', sans-serif;
-            background-color: #0f172a; /* 아주 짙은 네이비 */
+            background-color: #0f172a;
             color: #f8fafc;
-            overflow: hidden; /* 모달 떴을 때 배경 스크롤 방지 */
         }
 
         /* ======================================================
@@ -30,14 +29,13 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); /* 입체감 있는 배경 */
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
         }
 
-        /* 멋진 로고 폰트 스타일 */
         .brand-logo {
             font-size: 48px;
             font-weight: bold;
-            color: #38bdf8; /* tontv 시그니처 블루 */
+            color: #38bdf8;
             margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -47,7 +45,6 @@
             font-size: 24px;
             color: #f1f5f9;
             margin-bottom: 15px;
-            font-weight: normal;
         }
 
         .hero-desc {
@@ -58,7 +55,6 @@
             max-width: 500px;
         }
 
-        /* 텔레그램 인증 버튼 (메인 화면의 주인공) */
         .hero-btn {
             display: inline-flex;
             align-items: center;
@@ -69,46 +65,34 @@
             padding: 18px 36px;
             font-size: 18px;
             font-weight: bold;
-            border-radius: 50px; /* 둥근 버튼 */
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
-            text-decoration: none;
         }
         
         .hero-btn:hover {
             background-color: #0077b5;
-            transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+            transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 136, 204, 0.5);
         }
 
-        .hero-btn:active {
-            transform: translateY(1px);
-        }
-
         /* ======================================================
-           [2단계] 회원 정보 입력 모달 영역 (평소에는 완전히 숨김)
+           [2단계] 회원 정보 입력 모달 영역
            ====================================================== */
         .modal-overlay {
-            display: none; /* ⭐ 초기 상태: 무조건 숨김 ⭐ */
+            /* 중요: CSS 레벨에서 'display: none !important;' 처리하여 절대 미리 안 뜨게 차단 */
+            display: none !important; 
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* 배경을 어둡게 */
-            z-index: 1000; /* 메인 화면보다 위에 뜨도록 */
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
             justify-content: center;
             align-items: center;
-            opacity: 0; /* 서서히 나타나는 효과용 */
-            transition: opacity 0.3s ease;
-            backdrop-filter: blur(5px); /* 배경 흐리게 */
-        }
-
-        /* 모달이 활성화되었을 때의 클래스 */
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
@@ -119,17 +103,9 @@
             max-width: 450px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             position: relative;
-            transform: translateY(-20px); /* 위에서 아래로 떨어지는 효과용 */
-            transition: transform 0.3s ease;
             border: 1px solid #334155;
         }
 
-        /* 활성화되었을 때 모달 콘텐츠 위치 */
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-        }
-
-        /* 모달 닫기 버튼 */
         .close-modal {
             position: absolute;
             top: 20px;
@@ -139,7 +115,6 @@
             color: #94a3b8;
             font-size: 24px;
             cursor: pointer;
-            padding: 0;
         }
 
         .modal-header h2 {
@@ -149,7 +124,6 @@
             font-size: 24px;
         }
 
-        /* 폼 스타일 */
         .input-group { margin-bottom: 22px; }
         .input-group label {
             display: block;
@@ -171,10 +145,8 @@
         .input-group input:focus {
             outline: none;
             border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
         }
 
-        /* 약관 영역 */
         .terms-group {
             margin: 25px 0;
             padding: 18px;
@@ -207,18 +179,16 @@
             height: 18px;
         }
 
-        /* 최종 가입 버튼 */
         .submit-btn {
             width: 100%;
             padding: 16px;
-            background-color: #10b981; /* 성공의 초록색 */
+            background-color: #10b981;
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 17px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
         }
         .submit-btn:hover {
             background-color: #059669;
@@ -243,17 +213,14 @@
         </button>
     </div>
 
-    <div class="modal-overlay" id="nodeModal">
+    <div class="modal-overlay" id="nodeModal" style="display: none !important;">
         <div class="modal-content">
-            
             <button class="close-modal" onclick="closeNodeModal()">&times;</button>
-            
             <div class="modal-header">
                 <h2>노드 신청 정보 입력</h2>
             </div>
             
             <form id="signupForm" action="https://script.google.com/macros/s/AKfycby9iDAPz5poIwoPlaWmR9argoVi3QqrIf_ZlOuoerWmO1Piub_Sy6Oji1X0XW-a5s8GXw/exec" method="POST">
-                
                 <div class="input-group">
                     <label for="userName">이름</label>
                     <input type="text" id="userName" name="userName" placeholder="본명을 입력하세요" required>
@@ -272,8 +239,7 @@
                 <div class="terms-group">
                     <label class="checkbox-label" style="margin-bottom: 10px; font-weight: bold;">투자 약관</label>
                     <div class="terms-text">
-                        제 1 조 (목적) 본 약관은 tontv 노드 권한 신청 및 이에 수반되는 투자 참여 조항과 관련하여 회원과 회사 간의 책임 권리를 규정함을 목적으로 합니다...<br><br>
-                        (주요 내용 생략) ... 본 약관에 동의함으로써 회원은 노드 운영에 대한 책임을 이해하고 이에 따른 투자에 참여함을 확약합니다.
+                        제 1 조 (목적) 본 약관은 tontv 노드 권한 신청 및 이에 수반되는 투자 참여 조항과 관련하여 회원과 회사 간의 책임 권리를 규정함을 목적으로 합니다...
                     </div>
                     <label class="checkbox-label">
                         <input type="checkbox" id="agreeTerms" name="agreeTerms" value="동의함" required>
@@ -287,44 +253,25 @@
     </div>
 
     <script>
-        // DOM 요소 가져오기
         const modal = document.getElementById('nodeModal');
-        const form = document.getElementById('signupForm');
 
-        // [함수] 모달 열기 (메인 버튼 클릭 시 실행)
+        // ⭐ 안전장치: 페이지가 로드될 때 코드로 강제 숨김 확정
+        window.onload = function() {
+            modal.style.setProperty('display', 'none', 'important');
+        };
+
+        // [함수] 모달 열기 (버튼 클릭 시에만 display를 flex로 변경)
         function openNodeModal() {
-            // ⭐ 실제 서비스 시 여기에 텔레그램 인증 로직을 넣습니다.
-            // 인증 성공 callback 콜백에서 아래 코드를 실행하게 합니다.
-            
             alert('텔레그램 본인 확인이 완료되었습니다!\n회원 정보를 입력해 주세요.');
-            
-            // 모달을 보이게 설정 (CSS 클래스 추가)
-            modal.classList.add('active');
-            // 배경 스크롤 방지
-            document.body.style.overflow = 'hidden';
+            modal.style.setProperty('display', 'flex', 'important');
         }
 
-        // [함수] 모달 닫기 (X 버튼 클릭 시 실행)
+        // [함수] 모달 닫기
         function closeNodeModal() {
-            // 모달을 숨김 (CSS 클래스 제거)
-            modal.classList.remove('active');
-            // 배경 스크롤 허용
-            document.body.style.overflow = '';
+            modal.style.setProperty('display', 'none', 'important');
         }
 
-        // [함수] 폼 제출 이벤트 제어
-        form.addEventListener('submit', function(e) {
-            const checkbox = document.getElementById('agreeTerms');
-            if (!checkbox.checked) {
-                e.preventDefault(); // 제출 막기
-                alert('투자 약관에 동의하셔야 최종 신청이 가능합니다.');
-                return;
-            }
-            // 최종 제출 안내
-            alert('신청 정보가 안전하게 제출됩니다. 완료 페이지로 이동합니다.');
-        });
-
-        // ⭐ 중요: 모달 밖 어두운 배경을 클릭해도 모달이 닫히도록 설정
+        // 모달 바깥 배경 클릭 시 닫기
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
                 closeNodeModal();
