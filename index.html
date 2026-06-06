@@ -81,7 +81,7 @@
                 텔레그램 9억 유저와 연결된 초고속 TON 네트워크 위에서 작동하는 탈중앙화 미디어 노드를 선점하고, 생태계 핵심 자산인 <span class="text-blue-400 font-bold">XNOT</span> 토큰 보상을 획득하세요.
             </p>
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <button onclick="openStep1Modal()" class="w-full sm:w-auto ton-gradient-bg text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-xl shadow-blue-500/20 cursor-pointer">
+                <button id="openStep1Modal()" class="w-full sm:w-auto ton-gradient-bg text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-xl shadow-blue-500/20 cursor-pointer">
                     지금 노드 신청하기 <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
                 </button>
             </div>
@@ -435,43 +435,57 @@
         const SUPABASE_URL = "https://xjoyauojepvgevlzycth.supabase.co/rest/v1/"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqb3lhdW9qZXB2Z2V2bHp5Y3RoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NTI0MDksImV4cCI6MjA5NjMyODQwOX0.Y0vE5zD3VbhCdvk_eQ9ugNzb6OnV5RYkg01ODZsLpt0";
 
-        // Supabase 클라이언트 웹 초기화
-        const supabase = SUPABASE.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+       / Supabase 클라이언트 웹 초기화
+    const supabase = SUPABASE.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-       // 텔레그램 스크립트 충돌을 방지하는 인라인 CSS 강제 트리거 코드로 변경
-function openStep1Modal() {
-    const m1 = document.getElementById('step1Modal');
-    if(m1) {
-        m1.style.setProperty('display', 'flex', 'important'); // 수동으로 display: none을 flex로 깨부수고 오픈
-        document.body.style.overflow = 'hidden';
-    }
-}
+    // [핵심] 브라우저가 HTML의 모든 대용량 텍스트와 태그를 완벽히 다 읽은 후에만 아래 로직을 켭니다.
+    window.onload = function() {
+        
+        // 메인 신청 버튼 클릭 리스너 연결
+        const mainBtn = document.getElementById('mainOrderBtn');
+        if(mainBtn) {
+            mainBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                openStep1Modal();
+            });
+        }
 
-// 닫기 함수도 세트로 완벽하게 매핑해 줍니다.
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if(modal) {
-        modal.style.setProperty('display', 'none', 'important'); // 수동으로 닫기 복구
-        document.body.style.overflow = 'auto';
-    }
-}
+        // 1단계 모달 강제 flex 전환 (인라인 style 부여로 Tailwind 간섭 차단)
+        window.openStep1Modal = function() {
+            const m1 = document.getElementById('step1Modal');
+            if(m1) {
+                m1.style.setProperty('display', 'flex', 'important');
+                document.body.style.overflow = 'hidden';
+            }
+        }
 
-// 우회 브릿지 함수도 인라인 CSS 방식으로 교체해 줍니다.
-function bypassTelegramAuth() {
-    document.getElementById('telegramStatusText').innerText = "인증 완료 (임시 우회 적용됨)";
-    const m1 = document.getElementById('step1Modal');
-    const m2 = document.getElementById('step2Modal');
-    if(m1) m1.style.setProperty('display', 'none', 'important');
-    if(m2) m2.style.setProperty('display', 'flex', 'important');
-}
+        // 모달 닫기
+        window.closeModal = function(modalId) {
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.style.setProperty('display', 'none', 'important');
+                document.body.style.overflow = 'auto';
+            }
+        }
 
-        function calculatePrice(quantity) {
+        // 1단계 끄고 2단계 오픈 브릿지
+        window.bypassTelegramAuth = function() {
+            document.getElementById('telegramStatusText').innerText = "인증 완료 (임시 우회 적용됨)";
+            const m1 = document.getElementById('step1Modal');
+            const m2 = document.getElementById('step2Modal');
+            if(m1) m1.style.setProperty('display', 'none', 'important');
+            if(m2) m2.style.setProperty('display', 'flex', 'important');
+        }
+
+        // 금액 실시간 계산
+        window.calculatePrice = function(quantity) {
             const qty = parseInt(quantity) || 0;
             const total = qty * 1000;
             document.getElementById('totalPriceDisplay').innerText = `$${total.toLocaleString()} USD`;
         }
 
-        function toggleBuyLater(isChecked) {
+        // 나중에 신청하기 스위치 동작 제어 로직
+        window.toggleBuyLater = function(isChecked) {
             const qtyInput = document.getElementById('nodeQuantity');
             const qtyWrapper = document.getElementById('quantityWrapper');
             const priceWrapper = document.getElementById('priceDisplayWrapper');
@@ -497,55 +511,61 @@ function bypassTelegramAuth() {
             }
         }
 
-        // Supabase DB 'userlist' 테이블 저장 핸들러
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            const originalBtnText = submitBtn.innerHTML;
-            
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 데이터 안전하게 저장 중...`;
-
-            const name = document.getElementById('userName').value;
-            const phone = document.getElementById('userPhone').value;
-            const referrer = document.getElementById('userReferrer').value || "없음";
-            const buyLater = document.getElementById('buyLaterCheck').checked;
-            const quantity = buyLater ? 0 : (document.getElementById('nodeQuantity').value || 1);
-
-            try {
-                // Supabase 백엔드 실시간 insert 트랜잭션 수행
-                const { data, error } = await supabase
-                    .from('userlist')
-                    .insert([
-                        { 
-                            brand: 'XNOT',
-                            name: name, 
-                            phone: phone, 
-                            referrer: referrer, 
-                            quantity: parseInt(quantity), 
-                            buy_later: buyLater 
-                        }
-                    ]);
-
-                if (error) throw error;
-
-                closeModal('step2Modal');
-                
-                if(buyLater) {
-                    alert(`[DB 등록 완료]\n\n성함: ${name}\n추천인: ${referrer}\n\n노드 신청 없이 초기 멤버십 대기열에 안전하게 등록되었습니다.`);
-                } else {
-                    alert(`[DB 등록 완료]\n\n성함: ${name}\n추천인: ${referrer}\n수량: ${quantity} 개 (XNOT 매핑)\n\n확인을 누르면 'TON Wallet' 결제 연동 창으로 이동합니다.`);
-                    window.open("https://ton.org/wallets", "_blank", "width=500,height=600");
-                }
-
-            } catch (error) {
-                console.error("Supabase 데이터 전송 오류:", error);
-                alert("데이터베이스 서버와 통신 중 오류가 발생했습니다. 키 설정을 확인해 주세요.");
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            }
+        // 폼 제출 핸들러 연결
+        const appForm = document.getElementById('nodeApplicationForm');
+        if(appForm) {
+            appForm.addEventListener('submit', handleFormSubmit);
         }
-    </script>
+    };
+
+    // Supabase DB 저장 및 최종 팝업 로직
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+        const submitBtn = document.getElementById('submitBtn');
+        const originalBtnText = submitBtn.innerHTML;
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 데이터 안전하게 저장 중...`;
+
+        const name = document.getElementById('userName').value;
+        const phone = document.getElementById('userPhone').value;
+        const referrer = document.getElementById('userReferrer').value || "없음";
+        const buyLater = document.getElementById('buyLaterCheck').checked;
+        const quantity = buyLater ? 0 : (document.getElementById('nodeQuantity').value || 1);
+
+        try {
+            const { data, error } = await supabase
+                .from('userlist')
+                .insert([
+                    { 
+                        brand: 'XNOT',
+                        name: name, 
+                        phone: phone, 
+                        referrer: referrer, 
+                        quantity: parseInt(quantity), 
+                        buy_later: buyLater 
+                    }
+                ]);
+
+            if (error) throw error;
+
+            closeModal('step2Modal');
+            
+            if(buyLater) {
+                alert(`[DB 등록 완료]\n\n성함: ${name}\n추천인: ${referrer}\n\n노드 신청 없이 초기 멤버십 대기열에 안전하게 등록되었습니다.`);
+            } else {
+                alert(`[DB 등록 완료]\n\n성함: ${name}\n추천인: ${referrer}\n수량: ${quantity} 개 (XNOT 매핑)\n\n확인을 누르면 'TON Wallet' 결제 연동 창으로 이동합니다.`);
+                window.open("https://ton.org/wallets", "_blank", "width=500,height=600");
+            }
+
+        } catch (error) {
+            console.error("Supabase 오류:", error);
+            alert("데이터베이스 연결에 실패했습니다. API 키 설정을 다시 확인해 주세요.");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        }
+    }
+</script>
 </body>
 </html>
