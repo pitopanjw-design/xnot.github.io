@@ -438,29 +438,32 @@
         // Supabase 클라이언트 웹 초기화
         const supabase = SUPABASE.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function openStep1Modal() {
-            const m1 = document.getElementById('step1Modal');
-            if(m1) {
-                m1.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
+       // 텔레그램 스크립트 충돌을 방지하는 인라인 CSS 강제 트리거 코드로 변경
+function openStep1Modal() {
+    const m1 = document.getElementById('step1Modal');
+    if(m1) {
+        m1.style.setProperty('display', 'flex', 'important'); // 수동으로 display: none을 flex로 깨부수고 오픈
+        document.body.style.overflow = 'hidden';
+    }
+}
 
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if(modal) {
-                modal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        }
+// 닫기 함수도 세트로 완벽하게 매핑해 줍니다.
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if(modal) {
+        modal.style.setProperty('display', 'none', 'important'); // 수동으로 닫기 복구
+        document.body.style.overflow = 'auto';
+    }
+}
 
-        function bypassTelegramAuth() {
-            document.getElementById('telegramStatusText').innerText = "인증 완료 (임시 우회 적용됨)";
-            const m1 = document.getElementById('step1Modal');
-            const m2 = document.getElementById('step2Modal');
-            if(m1) m1.classList.remove('active');
-            if(m2) m2.classList.add('active');
-        }
+// 우회 브릿지 함수도 인라인 CSS 방식으로 교체해 줍니다.
+function bypassTelegramAuth() {
+    document.getElementById('telegramStatusText').innerText = "인증 완료 (임시 우회 적용됨)";
+    const m1 = document.getElementById('step1Modal');
+    const m2 = document.getElementById('step2Modal');
+    if(m1) m1.style.setProperty('display', 'none', 'important');
+    if(m2) m2.style.setProperty('display', 'flex', 'important');
+}
 
         function calculatePrice(quantity) {
             const qty = parseInt(quantity) || 0;
