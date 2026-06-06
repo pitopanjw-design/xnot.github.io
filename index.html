@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TON TV Node Sale</title>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=plus-jakarta-sans@400,500,600,700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* 1. 디자인 시스템 및 전체 다크모드 테마 정의 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', 'Pretendard', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #0A0D14; /* 톤티비 시그니처 딥 다크 배경 */
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --primary-glow: #00E676; /* 포인트 네온 그린 */
+            --ton-blue: #0098EA;    /* TON 체인 오피셜 블루 */
+            --bg-card: #141A29;     /* 컨테이너 카드 배경 */
+            --text-muted: #8A99AD;  /* 설명용 흐린 텍스트 */
+            --border-line: rgba(255, 255, 255, 0.06);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 100px 0;
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        .section-title {
+            font-size: 40px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .section-title span {
+            background: linear-gradient(90deg, var(--primary-glow) 0%, var(--ton-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 60px auto;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        /* 2. 헤더 고정 상단 내비게이션 바 */
+        header {
+            background: rgba(10, 13, 20, 0.8);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .logo span { color: var(--primary-glow); }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+        }
+
+        nav ul a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav ul a:hover { color: #fff; }
+
+        .btn-connect {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-connect:hover { background: #fff; color: #000; }
+
+        /* 3. [슬라이드 1 & 2 구성 반영] 메인 대시보드 및 히어로 섹션 */
+        .hero-section {
+            padding-top: 40px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            background: rgba(0, 230, 118, 0.08);
+            color: var(--primary-glow);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            line-height: 1.25;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -1.5px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(90deg, #00E676 0%, #0098EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .spec-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        .spec-label { color: var(--text-muted); font-size: 14px; margin-bottom: 6px; }
+        .spec-value { font-size: 26px; font-weight: 700; }
+        .spec-value span { color: var(--primary-glow); }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00E676 0%, #0098EA 100%);
+            color: #000;
+            font-weight: 700;
+            font-size: 18px;
+            padding: 20px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 230, 118, 0.15);
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); }
+
+        /* 우측 미니앱 플레이어 그래픽 카드 */
+        .mockup-card {
+            background: linear-gradient(135deg, #161D2B 0%, #0A0D14 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+
+        .mockup-video {
+            width: 100%;
+            height: 260px;
+            background: #020408;
+            border-radius: 16px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            border: 1px solid var(--border-line);
+        }
+
+        /* 4. [슬라이드 3 구성 반영] 미디어 무게중심 분석 섹션 */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .market-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .market-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 12px; color: #fff; }
+        .market-card p { color: var(--text-muted); font-size: 15px; line-height: 1.6; }
+        .market-icon { font-size: 28px; color: var(--primary-glow); margin-bottom: 16px; }
+
+        /* 5. [슬라이드 4 구성 반영] 플랫폼 비즈니스 특징 구조 */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .feature-card .icon { font-size: 32px; margin-bottom: 16px; color: var(--ton-blue); }
+        .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+        .feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+
+        /* 6. [슬라이드 5 구성 반영] 참여 프로세스 및 인프라 안내 */
+        .timeline-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 20px;
+            background: rgba(255,255,255,0.02);
+            padding: 20px;
+            border-radius: 14px;
+            border-left: 4px solid var(--primary-glow);
+        }
+
+        .step-number { font-size: 18px; font-weight: 700; color: var(--primary-glow); }
+        .step-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .step-desc { font-size: 14px; color: var(--text-muted); }
+
+        /* 7. [슬라이드 6 구성 반영] 하단 4단 푸터 */
+        footer {
+            background: #06080D;
+            padding: 60px 0 30px 0;
+            border-top: 1px solid var(--border-line);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 { color: #fff; font-size: 16px; margin-bottom: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .footer-col ul a { color: var(--text-muted); text-decoration: none; font-size: 14px; }
+        .footer-col ul a:hover { color: #fff; }
+
+        /* 8. 인터랙티브 텔레그램 위젯 모달 팝업 레이아웃 */
+        #dao-join-modal {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(2, 4, 8, 0.85); 
+            backdrop-filter: blur(8px); 
+            z-index: 2000; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #141A29; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            width: 100%; 
+            max-width: 480px; 
+            padding: 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
+            position: relative;
+            text-align: center;
+        }
+
+        .widget-wrapper {
+            margin: 24px 0;
+            display: flex;
+            justify-content: center;
+            min-height: 40px;
+        }
+
+        /* 반응형 화면 처리 */
+        @media (max-width: 968px) {
+            .hero-section, .market-grid, .feature-grid, .timeline-container, .footer-grid { grid-template-columns: 1fr !important; }
+            nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-container">
+            <div class="logo" onclick="window.scrollTo(0,0)">TON<span>TV</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#dashboard">홈</a></li>
+                    <li><a href="#market">시장분석</a></li>
+                    <li><a href="#features">플랫폼 모델</a></li>
+                    <li><a href="#process">참여가이드</a></li>
+                </ul>
+            </nav>
+            <button class="btn-connect" id="main-wallet-btn" onclick="connectWallet()">지갑 연결하기</button>
+        </div>
+    </header>
+
+    <section id="dashboard" style="margin-top: 80px;">
+        <div class="container hero-section">
+            <div>
+                <div class="badge">📡 텔레그램 WATCH-TO-EARN 숏폼 드라마 OTT</div>
+                <h1 class="hero-title">시청이 <span>자산</span>이 되는 플랫폼,<br>그 인프라를 소유하세요.</h1>
+                <p class="hero-desc">
+                    톤티비는 텔레그램 10억 유저 위에서 작동하는 <b>숏폼 드라마의 넷플릭스</b>입니다. 
+                    경쟁사가 회차마다 유료 결제를 팔 때, 우리는 <b>무료 올액세스, 구독, 토큰</b>을 팝니다. 
+                    지금, 그 스트리밍 인프라의 지분과 수익권을 가진 노드 사업자가 되세요.
+                </p>
+
+                <div class="spec-grid">
+                    <div class="spec-card">
+                        <div class="spec-label">노드 1개 참여가</div>
+                        <div class="spec-value" style="color: var(--primary-glow);">$1,000</div>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-label">1차 판매 규모</div>
+                        <div class="spec-value">3,000개 ($3M)</div>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-label">1차 잔여 수량</div>
+                        <div class="spec-value"><span>812</span> / 3,000</div>
+                    </div>
+                    <div class="spec-card">
+                        <div class="spec-label">총 발행 상한</div>
+                        <div class="spec-value">50,000</div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="buyNode()">노드 신청 및 확정하기</button>
+            </div>
+
+            <div class="mockup-card">
+                <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted);">
+                    <span>⚡ Telegram Mini App Interface</span>
+                    <span style="color: var(--primary-glow);">● Connected</span>
+                </div>
+                <div class="mockup-video">
+                    🎬 [ 재벌집 비밀 계약 · EP.7 플레이어 재생 중 ]
+                </div>
+                <h3 style="font-size: 18px; margin-bottom: 6px;">재벌집 비밀 계약 · EP.7</h3>
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">무료 시청 · 광고 시청 완료 시 <b>XNOT</b> 지급</p>
+                <div style="background: rgba(0,230,118,0.06); border: 1px solid rgba(0,230,118,0.2); padding: 16px; border-radius: 12px; text-align: center; color: var(--primary-glow); font-weight: 600;">
+                    ⛏️ 인프라 구동 보상 동기화 활성 (+15 XNOT 채굴 중)
+                </div>
+                <div style="margin-top: 16px; font-size: 13px; color: var(--text-muted); text-align: center; display: flex; justify-content: space-around;">
+                    <span>🟢 <b>312,840명</b> 시청 중</span>
+                    <span>💰 누적 광고 수익 <b>$4,218,500</b></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="market">
+        <div class="container">
+            <h2 class="section-title">지금, 미디어의 <span>무게중심</span>이 이동 중</h2>
+            <p class="section-desc">숏폼 드라마 시장은 전 세계적으로 폭발하고 있으며, 톤티비는 마케팅 비용 없이 시장을 선점합니다.</p>
+            
+            <div class="market-grid">
+                <div class="market-card">
+                    <div class="market-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <h3>$2.98B 돌파</h3>
+                    <p>2025 글로벌 숏폼 드라마 인앱결제 매출 규모 달성. 연간 +115% 이상의 압도적인 가속 성장을 기록하고 있습니다.</p>
+                </div>
+                <div class="market-card">
+                    <div class="market-icon"><i class="fa-solid fa-shuffle"></i></div>
+                    <h3>롱폼 OTT의 추월</h3>
+                    <p>숏폼 다운로드 지표가 기존 롱폼 대형 OTT 서비스를 추월했습니다. (7.33억 뷰 vs 6.58억 뷰 교차 완료)</p>
+                </div>
+                <div class="market-card">
+                    <div class="market-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <h3>CAC ZERO 실현</h3>
+                    <p>추가 설치 없이 텔레그램 10억 생태계 유저 위에서 원클릭 진입. 사용자 확보 비용을 제로에 가깝게 통제합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features">
+        <div class="container">
+            <h2 class="section-title">숏폼 드라마의 <span>넷플릭스</span>, 텔레그램 위에서</h2>
+            <p class="section-desc">무료 무제한 스트리밍 인프라에 블록체인 자산 가치 분배 체계를 직관적으로 융합했습니다.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon"><i class="fa-solid fa-circle-play"></i></div>
+                    <h3>무료 무제한 시청</h3>
+                    <p>광고 기반 정산 재원으로 전 작품 결제 장벽 없는 무제한 무료 스트리밍 실현.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fa-solid fa-crown"></i></div>
+                    <h3>월정액 프리미엄 $20</h3>
+                    <p>광고 제거 정기 구독 모델을 도입하여 예측 가능한 고마진 경상 매출 구조 완성.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fa-solid fa-cubes"></i></div>
+                    <h3>WATCH-TO-EARN</h3>
+                    <p>시청 활동이 곧 디지털 자산이 되는 강력한 구조. 시청 시간 비례 <b>XNOT</b> 보상 체계.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon"><i class="fa-solid fa-paper-plane"></i></div>
+                    <h3>텔레그램 미니앱</h3>
+                    <p>복잡한 가입 없이 사용 중인 텔레그램 계정 그대로 연동되는 극도의 접근성 제공.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="process">
+        <div class="container">
+            <h2 class="section-title">참여 가이드 및 <span>노드 프로세스</span></h2>
+            <p class="section-desc">노드 생태계 구축을 통해 글로벌 스트리밍 권한을 획득하고 정산 배분 풀에 참여하세요.</p>
+
+            <div class="timeline-container">
+                <div style="background: linear-gradient(135deg, #141A29 0%, #06080D 100%); padding: 40px; border-radius: 20px; border: 1px solid rgba(0,230,118,0.15);">
+                    <h3 style="font-size: 24px; margin-bottom: 8px;">인프라 노드 소유</h3>
+                    <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 24px;">노드 1개 참여 단가는 $1,000 고정이며 모든 정산 및 마이닝 보상 기준은 <b>XNOT</b> 토큰입니다.</p>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; color: #fff; font-size: 15px;">
+                        <li><i class="fa-solid fa-circle-check" style="color: var(--primary-glow); margin-right: 8px;"></i> 주관: TonGram Ventures Group (한국 주도 글로벌 DAO)</li>
+                        <li><i class="fa-solid fa-circle-check" style="color: var(--primary-glow); margin-right: 8px;"></i> 플랫폼: TON Corporation Co., Ltd. (베트남 호치민)</li>
+                        <li><i class="fa-solid fa-circle-check" style="color: var(--primary-glow); margin-right: 8px;"></i> 가동 정식 스케줄: 2026년 하반기 기준 가동 가이드</li>
+                    </ul>
+                </div>
+
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-number">01</div>
+                        <div>
+                            <div class="step-title">신청 및 DAO 멤버십 가입</div>
+                            <div class="step-desc">텔레그램 공식 로그인 위젯 인증을 통한 신원 연결 및 프로필 등록</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">02</div>
+                        <div>
+                            <div class="step-title">USDT 입금</div>
+                            <div class="step-desc">확정 수량에 맞춰 온체인 USDT 자산 전송 및 대기 상태 진입</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">03</div>
+                        <div>
+                            <div class="step-title">XNOT 수령</div>
+                            <div class="step-desc">라이선스 맵핑 처리 후 노드 정기 채굴권 및 프로토콜 자산 획득</div>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">04</div>
+                        <div>
+                            <div class="step-title">가동 및 월정산 분배</div>
+                            <div class="step-desc">플랫폼 분산 트래픽 처리 기여 및 글로벌 광고 수익 분배 풀 참여</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo" style="margin-bottom: 16px;">Ton<span>TV</span></div>
+                    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+                        시청이 자산이 되는 시대, 숏폼 드라마의 대중화 인프라를 지분으로 직접 지배하세요.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>메뉴 맵</h4>
+                    <ul>
+                        <li><a href="#dashboard">대시보드</a></li>
+                        <li><a href="#market">시장 기회 구조</a></li>
+                        <li><a href="#features">플랫폼 모델</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>노드 유틸리티</h4>
+                    <ul>
+                        <li><a href="#process">참여 프로세스</a></li>
+                        <li><a href="#">정산 기준: XNOT</a></li>
+                        <li><a href="#">리스크 고지서</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>글로벌 DAO 커널</h4>
+                    <ul>
+                        <li><a href="#">공식 홈페이지 가이드</a></li>
+                        <li><a href="#">Telegram: @TonTV</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+                <p>주관: <b>TonGram Ventures Group</b> (한국 주도 · 톤체인 생태계 확산 DAO)</p>
+                <p>플랫폼: <b>TON Corporation Co., Ltd.</b> (베트남 호치민, Ho Chi Minh City) · CEO Kim Man Ho</p>
+                <p style="margin-top: 12px; font-size: 11px; color: #475569;">© 2026 TON TV Node Distribution Foundation. All Rights Reserved. 본 사이트 정보는 투자 권유가 아닙니다.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="dao-join-modal">
+        <div class="modal-content">
+            <span onclick="closeModal()" style="position: absolute; top: 24px; right: 24px; color: #8A99AD; cursor: pointer; font-size: 20px;">✕</span>
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div style="font-size: 32px; margin-bottom: 12px;">🏛️</div>
+                <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">TON TV DAO 멤버 가입</h3>
+                <p style="color: #8A99AD; font-size: 14px; line-height: 1.5;">인프라 기여 정산 권한을 확보하기 위해 텔레그램 위젯 연동으로 가입을 시작합니다.</p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 20px; text-align: left;">
+                <div>
+                    <label style="display: block; font-size: 13px; color: #8A99AD; margin-bottom: 8px;">DAO 내 기여 희망 분야 설정</label>
+                    <select id="contributor-role" style="width: 100%; background: #0A0D14; border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 10px; color: #fff; font-size: 15px; outline: none;">
+                        <option value="Node Holder">Node Holder (인프라 및 트래픽 검증 기여)</option>
+                        <option value="Content Creator">Content Creator (숏폼 드라마 미디어 제작)</option>
+                        <option value="Community Builder">Community Builder (모더레이션 및 마케팅 기여)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 13px; color: #8A99AD; margin-bottom: 8px; text-align: center;">텔레그램 아이디 인증 및 권한 제공</label>
+                    <div class="widget-wrapper">
+                        <script async
+                            src="https://telegram.org/js/telegram-widget.js?22"
+                            data-telegram-login="TonTVNodeBot"
+                            data-size="large"
+                            data-auth-url="https://node.tontv.com/api/auth/telegram"
+                            data-request-access="write">
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 11px; color: #475569; margin-top: 16px;">위젯 인증 성공 시 멤버 데이터 매핑 후 2단계 지갑 연동으로 이동합니다.</p>
+        </div>
+    </div>
+
+    <script>
+        let isTelegramAuthenticated = false; // 텔레그램 가입 완료 여부 스위치 변수
+        let userWalletAddress = ""; 
+
+        // 상단 네비 바의 지갑 연결하기 버튼 눌렀을 때
+        function connectWallet() {
+            if (!isTelegramAuthenticated) {
+                alert("📢 먼저 아래 '노드 신청 및 확정하기' 버튼을 눌러 텔레그램 DAO 멤버 가입을 완료해 주세요!");
+                document.getElementById("dashboard").scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            triggerWalletConnection();
+        }
+
+        // 메인 화면의 대형 '노드 신청 및 확정하기' 버튼 클릭 시 실행
+        function buyNode() {
+            // 조건 없이 팝업 모달창 오픈
+            document.getElementById("dao-join-modal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("dao-join-modal").style.display = "none";
+        }
+
+        // 지갑 연결 실행부
+        function triggerWalletConnection() {
+            alert("🔗 TON 체인 지갑(Tonkeeper, MyTonWallet 등) 인증 팝업을 성공적으로 호출합니다.");
+            userWalletAddress = "UQAz_DAO_Member_TON_Wallet_88dB"; 
+            
+            const headerBtn = document.getElementById("main-wallet-btn");
+            headerBtn.innerText = "UQAz...88dB 연결됨";
+            headerBtn.style.borderColor = "var(--primary-glow)";
+
+            alert(`🏛️ 축하합니다!\n\n텔레그램 계정 신원과 온체인 지갑 주소 매핑이 완료되어 TON TV DAO 정식 멤버십 노드 신청이 완전히 최종 확정되었습니다!`);
+        }
+
+        /* [개발자 참고용 주석]
+           실제 텔레그램 로그인 위젯은 유저가 인증에 성공하면 
+           data-auth-url("https://node.tontv.com/api/auth/telegram")에 정의된 백엔드로 인증 데이터를 쏩니다.
+           브라우저 프론트 테스트 환경에서 지갑 연동으로 강제 승인 전환을 테스트해보고 싶으시다면,
+           콘솔창에 `isTelegramAuthenticated = true;`를 입력하신 후 상단 지갑 버튼을 누르시면 흐름을 미리 보실 수 있습니다.
+        */
+    </script>
+</body>
+</html>
