@@ -3,510 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TON TV Node Sale</title>
-    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=plus-jakarta-sans@400,500,600,700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>TON TV (XNOT) Node Sales</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. 디자인 시스템 및 전체 다크모드 테마 정의 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', 'Pretendard', sans-serif;
-            scroll-behavior: smooth;
-        }
-
         body {
-            background-color: #0A0D14; /* 톤티비 시그니처 딥 다크 배경 */
-            color: #FFFFFF;
-            overflow-x: hidden;
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #0B0E14;
+            color: #F3F4F6;
         }
-
-        :root {
-            --primary-glow: #00E676; /* 포인트 네온 그린 */
-            --ton-blue: #0098EA;    /* TON 체인 오피셜 블루 */
-            --bg-card: #141A29;     /* 컨테이너 카드 배경 */
-            --text-muted: #8A99AD;  /* 설명용 흐린 텍스트 */
-            --border-line: rgba(255, 255, 255, 0.06);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        section {
-            padding: 100px 0;
-            border-bottom: 1px solid var(--border-line);
-        }
-
-        .section-title {
-            font-size: 40px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 16px;
-            letter-spacing: -1px;
-        }
-
-        .section-title span {
-            background: linear-gradient(90deg, var(--primary-glow) 0%, var(--ton-blue) 100%);
+        .ton-gradient-text {
+            background: linear-gradient(135deg, #0088CC 0%, #00A6FF 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .section-desc {
-            color: var(--text-muted);
-            text-align: center;
-            max-width: 650px;
-            margin: 0 auto 60px auto;
-            font-size: 17px;
-            line-height: 1.6;
+        .ton-gradient-bg {
+            background: linear-gradient(135deg, #0088CC 0%, #005580 100%);
         }
-
-        /* 2. 헤더 고정 상단 내비게이션 바 */
-        header {
-            background: rgba(10, 13, 20, 0.8);
+        .glass-card {
+            background: rgba(22, 28, 38, 0.8);
             backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .custom-modal {
+            display: none;
             position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-line);
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .logo span { color: var(--primary-glow); }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 32px;
-        }
-
-        nav ul a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        nav ul a:hover { color: #fff; }
-
-        .btn-connect {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-connect:hover { background: #fff; color: #000; }
-
-        /* 3. [슬라이드 1 & 2 구성 반영] 메인 대시보드 및 히어로 섹션 */
-        .hero-section {
-            padding-top: 40px;
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .badge {
-            display: inline-flex;
-            background: rgba(0, 230, 118, 0.08);
-            color: var(--primary-glow);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 24px;
-        }
-
-        .hero-title {
-            font-size: 48px;
-            line-height: 1.25;
-            font-weight: 700;
-            margin-bottom: 24px;
-            letter-spacing: -1.5px;
-        }
-
-        .hero-title span {
-            background: linear-gradient(90deg, #00E676 0%, #0098EA 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-desc {
-            color: var(--text-muted);
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 40px;
-        }
-
-        .spec-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .spec-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-line);
-            padding: 24px;
-            border-radius: 16px;
-        }
-
-        .spec-label { color: var(--text-muted); font-size: 14px; margin-bottom: 6px; }
-        .spec-value { font-size: 26px; font-weight: 700; }
-        .spec-value span { color: var(--primary-glow); }
-
-        .btn-primary {
-            background: linear-gradient(90deg, #00E676 0%, #0098EA 100%);
-            color: #000;
-            font-weight: 700;
-            font-size: 18px;
-            padding: 20px;
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 230, 118, 0.15);
-            transition: transform 0.2s;
-            width: 100%;
-        }
-
-        .btn-primary:hover { transform: translateY(-2px); }
-
-        /* 우측 미니앱 플레이어 그래픽 카드 */
-        .mockup-card {
-            background: linear-gradient(135deg, #161D2B 0%, #0A0D14 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 28px;
-            padding: 28px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-        }
-
-        .mockup-video {
-            width: 100%;
-            height: 260px;
-            background: #020408;
-            border-radius: 16px;
-            margin: 20px 0;
-            display: flex;
+            inset: 0;
+            z-index: 9999;
             align-items: center;
             justify-content: center;
-            color: var(--text-muted);
-            border: 1px solid var(--border-line);
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
         }
-
-        /* 4. [슬라이드 3 구성 반영] 미디어 무게중심 분석 섹션 */
-        .market-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        .market-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-line);
-            border-radius: 20px;
-            padding: 32px;
-        }
-
-        .market-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 12px; color: #fff; }
-        .market-card p { color: var(--text-muted); font-size: 15px; line-height: 1.6; }
-        .market-icon { font-size: 28px; color: var(--primary-glow); margin-bottom: 16px; }
-
-        /* 5. [슬라이드 4 구성 반영] 플랫폼 비즈니스 특징 구조 */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-line);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-        }
-
-        .feature-card .icon { font-size: 32px; margin-bottom: 16px; color: var(--ton-blue); }
-        .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
-        .feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
-
-        /* 6. [슬라이드 5 구성 반영] 참여 프로세스 및 인프라 안내 */
-        .timeline-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-        }
-
-        .step-list {
+        .custom-modal.active {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .step-item {
-            display: flex;
-            gap: 20px;
-            background: rgba(255,255,255,0.02);
-            padding: 20px;
-            border-radius: 14px;
-            border-left: 4px solid var(--primary-glow);
-        }
-
-        .step-number { font-size: 18px; font-weight: 700; color: var(--primary-glow); }
-        .step-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-        .step-desc { font-size: 14px; color: var(--text-muted); }
-
-        /* 7. [슬라이드 6 구성 반영] 하단 4단 푸터 */
-        footer {
-            background: #06080D;
-            padding: 60px 0 30px 0;
-            border-top: 1px solid var(--border-line);
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-col h4 { color: #fff; font-size: 16px; margin-bottom: 20px; }
-        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-        .footer-col ul a { color: var(--text-muted); text-decoration: none; font-size: 14px; }
-        .footer-col ul a:hover { color: #fff; }
-
-        /* 8. 인터랙티브 텔레그램 위젯 모달 팝업 레이아웃 */
-        #dao-join-modal {
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(2, 4, 8, 0.85); 
-            backdrop-filter: blur(8px); 
-            z-index: 2000; 
-            align-items: center; 
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: #141A29; 
-            border: 1px solid rgba(255,255,255,0.08); 
-            width: 100%; 
-            max-width: 480px; 
-            padding: 40px; 
-            border-radius: 24px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
-            position: relative;
-            text-align: center;
-        }
-
-        .widget-wrapper {
-            margin: 24px 0;
-            display: flex;
-            justify-content: center;
-            min-height: 40px;
-        }
-
-        /* 반응형 화면 처리 */
-        @media (max-width: 968px) {
-            .hero-section, .market-grid, .feature-grid, .timeline-container, .footer-grid { grid-template-columns: 1fr !important; }
-            nav { display: none; }
         }
     </style>
 </head>
-<body>
+<body class="overflow-x-hidden">
 
-    <header>
-        <div class="container nav-container">
-            <div class="logo" onclick="window.scrollTo(0,0)">TON<span>TV</span></div>
-            <nav>
-                <ul>
-                    <li><a href="#dashboard">홈</a></li>
-                    <li><a href="#market">시장분석</a></li>
-                    <li><a href="#features">플랫폼 모델</a></li>
-                    <li><a href="#process">참여가이드</a></li>
-                </ul>
+    <header class="fixed top-0 left-0 w-full z-40 glass-card border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full ton-gradient-bg flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-tv text-white text-lg"></i>
+                </div>
+                <span class="text-xl font-black tracking-wider text-white">TON <span class="text-blue-400">TV</span></span>
+            </div>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-400">
+                <a href="#market" class="hover:text-white transition">시장 기회</a>
+                <a href="#features" class="hover:text-white transition">플랫폼 모델</a>
+                <a href="#tokenomics" class="hover:text-white transition">XNOT 토크노믹스</a>
+                <a href="#process" class="hover:text-white transition">참여 프로세스</a>
+                <a href="#roadmap" class="hover:text-white transition">로드맵</a>
             </nav>
-            <button class="btn-connect" id="main-wallet-btn" onclick="connectWallet()">지갑 연결하기</button>
+            <div>
+                <button onclick="openStep1Modal()" class="ton-gradient-bg text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition shadow-lg shadow-blue-500/20 cursor-pointer">
+                    지금 노드 신청하기
+                </button>
+            </div>
         </div>
     </header>
 
-    <section id="dashboard" style="margin-top: 80px;">
-        <div class="container hero-section">
-            <div>
-                <div class="badge">📡 텔레그램 WATCH-TO-EARN 숏폼 드라마 OTT</div>
-                <h1 class="hero-title">시청이 <span>자산</span>이 되는 플랫폼,<br>그 인프라를 소유하세요.</h1>
-                <p class="hero-desc">
-                    톤티비는 텔레그램 10억 유저 위에서 작동하는 <b>숏폼 드라마의 넷플릭스</b>입니다. 
-                    경쟁사가 회차마다 유료 결제를 팔 때, 우리는 <b>무료 올액세스, 구독, 토큰</b>을 팝니다. 
-                    지금, 그 스트리밍 인프라의 지분과 수익권을 가진 노드 사업자가 되세요.
-                </p>
-
-                <div class="spec-grid">
-                    <div class="spec-card">
-                        <div class="spec-label">노드 1개 참여가</div>
-                        <div class="spec-value" style="color: var(--primary-glow);">$1,000</div>
-                    </div>
-                    <div class="spec-card">
-                        <div class="spec-label">1차 판매 규모</div>
-                        <div class="spec-value">3,000개 ($3M)</div>
-                    </div>
-                    <div class="spec-card">
-                        <div class="spec-label">1차 잔여 수량</div>
-                        <div class="spec-value"><span>812</span> / 3,000</div>
-                    </div>
-                    <div class="spec-card">
-                        <div class="spec-label">총 발행 상한</div>
-                        <div class="spec-value">50,000</div>
-                    </div>
-                </div>
-
-                <button class="btn-primary" onclick="buyNode()">노드 신청 및 확정하기</button>
+    <section class="relative pt-40 pb-24 md:pt-48 md:pb-32 overflow-hidden">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 mb-6 border border-blue-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> TON 생태계 최초의 Web3 미디어 인프라
+            </span>
+            <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-none mb-6">
+                글로벌 미디어 혁명,<br>
+                <span class="ton-gradient-text">TON TV 노드 판매 시작</span>
+            </h1>
+            <p class="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-normal leading-relaxed">
+                텔레그램 9억 유저와 연결된 초고속 TON 네트워크 위에서 작동하는 탈중앙화 미디어 노드를 선점하고, 생태계 핵심 자산인 <span class="text-blue-400 font-bold">XNOT</span> 토큰 보상을 획득하세요.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <button onclick="openStep1Modal()" class="w-full sm:w-auto ton-gradient-bg text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition shadow-xl shadow-blue-500/20 cursor-pointer">
+                    지금 노드 신청하기 <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                </button>
             </div>
+        </div>
+    </section>
 
-            <div class="mockup-card">
-                <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted);">
-                    <span>⚡ Telegram Mini App Interface</span>
-                    <span style="color: var(--primary-glow);">● Connected</span>
+    <section class="py-12 bg-gray-950/50 border-y border-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <p class="text-sm text-gray-500 font-medium mb-1">1차 화이트리스트 수량</p>
+                    <p class="text-2xl sm:text-4xl font-extrabold text-white">3,000 개</p>
                 </div>
-                <div class="mockup-video">
-                    🎬 [ 재벌집 비밀 계약 · EP.7 플레이어 재생 중 ]
+                <div>
+                    <p class="text-sm text-gray-500 font-medium mb-1">시작 가격 (개당)</p>
+                    <p class="text-2xl sm:text-4xl font-extrabold text-blue-400">$1,000</p>
                 </div>
-                <h3 style="font-size: 18px; margin-bottom: 6px;">재벌집 비밀 계약 · EP.7</h3>
-                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">무료 시청 · 광고 시청 완료 시 <b>XNOT</b> 지급</p>
-                <div style="background: rgba(0,230,118,0.06); border: 1px solid rgba(0,230,118,0.2); padding: 16px; border-radius: 12px; text-align: center; color: var(--primary-glow); font-weight: 600;">
-                    ⛏️ 인프라 구동 보상 동기화 활성 (+15 XNOT 채굴 중)
+                <div>
+                    <p class="text-sm text-gray-500 font-medium mb-1">이전 라운드 완판율</p>
+                    <p class="text-2xl sm:text-4xl font-extrabold text-emerald-400">100%</p>
                 </div>
-                <div style="margin-top: 16px; font-size: 13px; color: var(--text-muted); text-align: center; display: flex; justify-content: space-around;">
-                    <span>🟢 <b>312,840명</b> 시청 중</span>
-                    <span>💰 누적 광고 수익 <b>$4,218,500</b></span>
+                <div>
+                    <p class="text-sm text-gray-500 font-medium mb-1">총 보상 풀 비율</p>
+                    <p class="text-2xl sm:text-4xl font-extrabold text-purple-400">35%</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="market">
-        <div class="container">
-            <h2 class="section-title">지금, 미디어의 <span>무게중심</span>이 이동 중</h2>
-            <p class="section-desc">숏폼 드라마 시장은 전 세계적으로 폭발하고 있으며, 톤티비는 마케팅 비용 없이 시장을 선점합니다.</p>
+    <section id="market" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-20">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-black text-white mb-4">지금, 미디어의 <span class="text-blue-400">무게중심</span>이 이동 중</h2>
+            <p class="text-gray-400 text-sm max-w-2xl mx-auto">숏폼 드라마 시장은 전 세계적으로 폭발하고 있으며, 톤티비는 마케팅 비용 없이 시장을 선점합니다.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass-card p-8 rounded-2xl border border-gray-800">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-6 border border-blue-500/20 text-xl"><i class="fa-solid fa-chart-line"></i></div>
+                <h3 class="text-xl font-bold text-white mb-3">$2.98B 돌파</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">2025 글로벌 숏폼 드라마 인앱결제 매출 규모 달성. 연간 +115% 이상의 압도적인 가속 성장을 기록하고 있습니다.</p>
+            </div>
+            <div class="glass-card p-8 rounded-2xl border border-gray-800">
+                <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-6 border border-purple-500/20 text-xl"><i class="fa-solid fa-shuffle"></i></div>
+                <h3 class="text-xl font-bold text-white mb-3">롱폼 OTT의 추월</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">숏폼 다운로드 지표가 기존 롱폼 대형 OTT 서비스를 추월했습니다. (7.33억 뷰 vs 6.58억 뷰 교차 완료)</p>
+            </div>
+            <div class="glass-card p-8 rounded-2xl border border-gray-800">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-6 border border-emerald-500/20 text-xl"><i class="fa-solid fa-bolt"></i></div>
+                <h3 class="text-xl font-bold text-white mb-3">CAC ZERO 실현</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">추가 설치 없이 텔레그램 10억 생태계 유저 위에서 원클릭 진입. 사용자 확보 비용을 제로에 가깝게 통제합니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-24 bg-gray-950/30 border-t border-gray-900 scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-black text-white mb-4">숏폼 드라마의 <span class="text-blue-400">넷플릭스</span>, 텔레그램 위에서</h2>
+                <p class="text-gray-400 text-sm max-w-2xl mx-auto">무료 무제한 스트리밍 인프라에 블록체인 자산 가치 분배 체계를 직관적으로 융합했습니다.</p>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card p-6 rounded-2xl border border-gray-800">
+                    <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 mb-4 text-lg"><i class="fa-solid fa-circle-play"></i></div>
+                    <h3 class="text-base font-bold text-white mb-2">무료 무제한 시청</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">광고 기반 정산 재원으로 전 작품 결제 장벽 없는 무제한 무료 스트리밍 실현.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl border border-gray-800">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 mb-4 text-lg"><i class="fa-solid fa-crown"></i></div>
+                    <h3 class="text-base font-bold text-white mb-2">월정액 프리미엄 $20</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">광고 제거 정기 구독 모델을 도입하여 예측 가능한 고마진 경상 매출 구조 완성.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl border border-blue-500/20 ring-1 ring-blue-500/10">
+                    <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 text-lg"><i class="fa-solid fa-cubes"></i></div>
+                    <h3 class="text-base font-bold text-white mb-2">WATCH-TO-EARN</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">시청 활동이 곧 디지털 자산이 되는 강력한 구조. 시청 시간 비례 <b class="text-blue-400 font-bold">XNOT</b> 보상 체계.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl border border-gray-800">
+                    <div class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 mb-4 text-lg"><i class="fa-solid fa-paper-plane"></i></div>
+                    <h3 class="text-base font-bold text-white mb-2">텔레그램 미니앱</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">복잡한 가입 없이 사용 중인 텔레그램 계정 그대로 연동되는 극도의 접근성 제공.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tokenomics" class="py-24 border-t border-gray-900 scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-black text-white mb-4">XNOT 토크노믹스 스펙</h2>
+            <p class="text-gray-400 max-w-xl mx-auto mb-16 text-sm">기여한 만큼 공정하게 보상받는 TON TV의 독창적인 경제 모델</p>
             
-            <div class="market-grid">
-                <div class="market-card">
-                    <div class="market-icon"><i class="fa-solid fa-chart-line"></i></div>
-                    <h3>$2.98B 돌파</h3>
-                    <p>2025 글로벌 숏폼 드라마 인앱결제 매출 규모 달성. 연간 +115% 이상의 압도적인 가속 성장을 기록하고 있습니다.</p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-card p-6 rounded-2xl text-left">
+                    <div class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2">Ecosystem Utility</div>
+                    <h3 class="text-lg font-bold text-white mb-3">유틸리티의 중심 XNOT</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">TON TV 플랫폼 내 광고 집행, 프리미엄 채널 구독, 크리에이터 후원, 데이터 스트리밍 이용료 등 모든 경제 활동은 XNOT 토큰을 매개로 실행됩니다.</p>
                 </div>
-                <div class="market-card">
-                    <div class="market-icon"><i class="fa-solid fa-shuffle"></i></div>
-                    <h3>롱폼 OTT의 추월</h3>
-                    <p>숏폼 다운로드 지표가 기존 롱폼 대형 OTT 서비스를 추월했습니다. (7.33억 뷰 vs 6.58억 뷰 교차 완료)</p>
+                <div class="glass-card p-6 rounded-2xl text-left border-blue-500/30 ring-1 ring-blue-500/20">
+                    <div class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-2">Node Incentives</div>
+                    <h3 class="text-lg font-bold text-white mb-3">노드 운영 보상 (35%)</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">전체 발행량 중 35%라는 압도적인 물량이 오직 탈중앙화 노드를 활성화하고 네트워크 무결성을 검증하는 운영자분들께 지급됩니다.</p>
                 </div>
-                <div class="market-card">
-                    <div class="market-icon"><i class="fa-solid fa-bolt"></i></div>
-                    <h3>CAC ZERO 실현</h3>
-                    <p>추가 설치 없이 텔레그램 10억 생태계 유저 위에서 원클릭 진입. 사용자 확보 비용을 제로에 가깝게 통제합니다.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="features">
-        <div class="container">
-            <h2 class="section-title">숏폼 드라마의 <span>넷플릭스</span>, 텔레그램 위에서</h2>
-            <p class="section-desc">무료 무제한 스트리밍 인프라에 블록체인 자산 가치 분배 체계를 직관적으로 융합했습니다.</p>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="icon"><i class="fa-solid fa-circle-play"></i></div>
-                    <h3>무료 무제한 시청</h3>
-                    <p>광고 기반 정산 재원으로 전 작품 결제 장벽 없는 무제한 무료 스트리밍 실현.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon"><i class="fa-solid fa-crown"></i></div>
-                    <h3>월정액 프리미엄 $20</h3>
-                    <p>광고 제거 정기 구독 모델을 도입하여 예측 가능한 고마진 경상 매출 구조 완성.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon"><i class="fa-solid fa-cubes"></i></div>
-                    <h3>WATCH-TO-EARN</h3>
-                    <p>시청 활동이 곧 디지털 자산이 되는 강력한 구조. 시청 시간 비례 <b>XNOT</b> 보상 체계.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon"><i class="fa-solid fa-paper-plane"></i></div>
-                    <h3>텔레그램 미니앱</h3>
-                    <p>복잡한 가입 없이 사용 중인 텔레그램 계정 그대로 연동되는 극도의 접근성 제공.</p>
+                <div class="glass-card p-6 rounded-2xl text-left">
+                    <div class="text-xs font-bold text-amber-400 uppercase tracking-widest mb-2">Deflationary Mechanism</div>
+                    <h3 class="text-lg font-bold text-white mb-3">강력한 소각 메커니즘</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">플랫폼 서비스 매출 및 트래픽 수수료로 발생하는 XNOT의 일정 비율은 실시간으로 프로토콜 단에서 영구 소각되어 자산 가치를 보호합니다.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="process">
-        <div class="container">
-            <h2 class="section-title">참여 가이드 및 <span>노드 프로세스</span></h2>
-            <p class="section-desc">노드 생태계 구축을 통해 글로벌 스트리밍 권한을 획득하고 정산 배분 풀에 참여하세요.</p>
-
-            <div class="timeline-container">
-                <div style="background: linear-gradient(135deg, #141A29 0%, #06080D 100%); padding: 40px; border-radius: 20px; border: 1px solid rgba(0,230,118,0.15);">
-                    <h3 style="font-size: 24px; margin-bottom: 8px;">인프라 노드 소유</h3>
-                    <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 24px;">노드 1개 참여 단가는 $1,000 고정이며 모든 정산 및 마이닝 보상 기준은 <b>XNOT</b> 토큰입니다.</p>
-                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; color: #fff; font-size: 15px;">
-                        <li><i class="fa-solid fa-circle-check" style="color: var(--primary-glow); margin-right: 8px;"></i> 주관: TonGram Ventures Group (한국 주도 글로벌 DAO)</li>
-                        <li><i class="fa-solid fa-circle-check" style="color: var(--primary-glow); margin-right: 8px;"></i> 플랫폼: TON Corporation Co., Ltd. (베트남 호치민)</li>
-                        <li><i class="fa-solid fa-circle-check" style="color: var(--primary-glow); margin-right: 8px;"></i> 가동 정식 스케줄: 2026년 하반기 기준 가동 가이드</li>
+    <section id="process" class="py-24 bg-gray-950/40 border-t border-gray-900 scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-black text-white mb-4">참여 가이드 및 <span class="text-emerald-400">노드 프로세스</span></h2>
+                <p class="text-gray-400 text-sm max-w-2xl mx-auto">노드 생태계 구축을 통해 글로벌 스트리밍 권한을 획득하고 정산 배분 풀에 참여하세요.</p>
+            </div>
+            
+            <div class="grid lg:grid-cols-5 gap-8 items-start">
+                <div class="lg:col-span-2 bg-gradient-to-br from-gray-900 via-gray-950 to-black p-8 rounded-2xl border border-emerald-500/20 shadow-xl">
+                    <h3 class="text-2xl font-extrabold text-white mb-3">인프라 노드 소유</h3>
+                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">노드 1개 참여 단가는 <span class="text-emerald-400 font-bold">$1,000 고정</span>이며 모든 정산 및 마이닝 보상 기준은 <b class="text-white">XNOT</b> 토큰입니다.</p>
+                    <ul class="space-y-4 text-sm text-gray-300">
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                            <span><b>주관:</b> TonGram Ventures Group<br><span class="text-xs text-gray-500">(한국 주도 글로벌 DAO)</span></span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                            <span><b>플랫폼:</b> TON Corporation Co., Ltd.<br><span class="text-xs text-gray-500">(베트남 호치민)</span></span>
+                        </li>
+                        <li class="flex items-start gap-2.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                            <span><b>정식 스케줄:</b> 2026년 하반기 기준 가동 가이드</span>
+                        </li>
                     </ul>
                 </div>
 
-                <div class="step-list">
-                    <div class="step-item">
-                        <div class="step-number">01</div>
+                <div class="lg:col-span-3 space-y-4">
+                    <div class="glass-card p-5 rounded-xl flex gap-4 items-center">
+                        <div class="text-2xl font-black text-blue-400 bg-blue-500/5 w-14 h-14 rounded-xl flex items-center justify-center border border-blue-500/10 shrink-0">01</div>
                         <div>
-                            <div class="step-title">신청 및 DAO 멤버십 가입</div>
-                            <div class="step-desc">텔레그램 공식 로그인 위젯 인증을 통한 신원 연결 및 프로필 등록</div>
+                            <h4 class="text-sm font-bold text-white mb-0.5">신청 및 DAO 멤버십 가입</h4>
+                            <p class="text-xs text-gray-400">텔레그램 공식 로그인 위젯 인증을 통한 신원 연결 및 프로필 등록</p>
                         </div>
                     </div>
-                    <div class="step-item">
-                        <div class="step-number">02</div>
+                    <div class="glass-card p-5 rounded-xl flex gap-4 items-center">
+                        <div class="text-2xl font-black text-blue-400 bg-blue-500/5 w-14 h-14 rounded-xl flex items-center justify-center border border-blue-500/10 shrink-0">02</div>
                         <div>
-                            <div class="step-title">USDT 입금</div>
-                            <div class="step-desc">확정 수량에 맞춰 온체인 USDT 자산 전송 및 대기 상태 진입</div>
+                            <h4 class="text-sm font-bold text-white mb-0.5">USDT 입금</h4>
+                            <p class="text-xs text-gray-400">확정 수량에 맞춰 온체인 USDT 자산 전송 및 대기 상태 진입</p>
                         </div>
                     </div>
-                    <div class="step-item">
-                        <div class="step-number">03</div>
+                    <div class="glass-card p-5 rounded-xl flex gap-4 items-center">
+                        <div class="text-2xl font-black text-blue-400 bg-blue-500/5 w-14 h-14 rounded-xl flex items-center justify-center border border-blue-500/10 shrink-0">03</div>
                         <div>
-                            <div class="step-title">XNOT 수령</div>
-                            <div class="step-desc">라이선스 맵핑 처리 후 노드 정기 채굴권 및 프로토콜 자산 획득</div>
+                            <h4 class="text-sm font-bold text-white mb-0.5">XNOT 수령</h4>
+                            <p class="text-xs text-gray-400">라이선스 맵핑 처리 후 노드 정기 채굴권 및 프로토콜 자산 획득</p>
                         </div>
                     </div>
-                    <div class="step-item">
-                        <div class="step-number">04</div>
+                    <div class="glass-card p-5 rounded-xl flex gap-4 items-center">
+                        <div class="text-2xl font-black text-blue-400 bg-blue-500/5 w-14 h-14 rounded-xl flex items-center justify-center border border-blue-500/10 shrink-0">04</div>
                         <div>
-                            <div class="step-title">가동 및 월정산 분배</div>
-                            <div class="step-desc">플랫폼 분산 트래픽 처리 기여 및 글로벌 광고 수익 분배 풀 참여</div>
+                            <h4 class="text-sm font-bold text-white mb-0.5">가동 및 월정산 분배</h4>
+                            <p class="text-xs text-gray-400">플랫폼 분산 트래픽 처리 기여 및 글로벌 광고 수익 분배 풀 참여</p>
                         </div>
                     </div>
                 </div>
@@ -514,126 +255,237 @@
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="logo" style="margin-bottom: 16px;">Ton<span>TV</span></div>
-                    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+    <section id="roadmap" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-gray-900 scroll-mt-20">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-black text-white mb-4">프로젝트 로드맵</h2>
+            <p class="text-gray-400 text-sm">TON TV의 2026년 대규모 여정과 인프라 확장 계획</p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-blue-500">
+                <span class="text-xs font-bold text-blue-400">2026 Q1</span>
+                <h4 class="text-white font-bold my-2">인프라 구축 및 화이트리스트</h4>
+                <p class="text-gray-400 text-xs leading-relaxed">테스트넷 구동 및 노드 판매 1차 ($1,000, 3천 개 한정) 오픈, 얼리버드 커뮤니티 조성.</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-gray-700">
+                <span class="text-xs font-bold text-gray-500">2026 Q2</span>
+                <h4 class="text-white font-bold my-2">메인넷 연동 및 마이닝 시작</h4>
+                <p class="text-gray-400 text-xs leading-relaxed">TON 메인넷 스마트 컨트랙트 정식 배포, 노드 가동을 통한 XNOT 토큰 마이닝 보상 개시.</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-gray-700">
+                <span class="text-xs font-bold text-gray-500">2026 Q3</span>
+                <h4 class="text-white font-bold my-2">텔레그램 미니앱 공식 런칭</h4>
+                <p class="text-gray-400 text-xs leading-relaxed">수천만 명이 바로 시청할 수 있는 전용 미디어 미니앱 오픈 및 크리에이터 보상제 도입.</p>
+            </div>
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-gray-700">
+                <span class="text-xs font-bold text-gray-500">2026 Q4</span>
+                <h4 class="text-white font-bold my-2">글로벌 DEX/CEX 상장</h4>
+                <p class="text-gray-400 text-xs leading-relaxed">주요 글로벌 가상자산 거래소에 XNOT 토큰 상장 및 미디어 트래픽 기반 자동 소각 시스템 활성화.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-12 bg-gray-950/40 border-t border-gray-900 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-xs font-bold tracking-widest text-gray-500 uppercase mb-6">GLOBAL PARTNERS & INVESTORS</p>
+            <div class="flex flex-wrap justify-center items-center gap-12 opacity-40 grayscale hover:grayscale-0 transition duration-300 text-sm">
+                <span class="text-white font-bold tracking-wider"><i class="fa-brands fa-telegram mr-2"></i>TON Ecosystem</span>
+                <span class="text-white font-bold tracking-wider"><i class="fa-solid fa-layer-group mr-2"></i>Web3 Labs</span>
+                <span class="text-white font-bold tracking-wider"><i class="fa-solid fa-shield-halved mr-2"></i>CertiK Verified</span>
+                <span class="text-white font-bold tracking-wider"><i class="fa-solid fa-chart-pie mr-2"></i>Defi Capital</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-950 py-16 border-t border-gray-900 text-gray-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <div class="space-y-4">
+                    <div class="text-xl font-black text-white tracking-wider">TON <span class="text-blue-400">TV</span></div>
+                    <p class="text-xs text-gray-500 leading-relaxed">
                         시청이 자산이 되는 시대, 숏폼 드라마의 대중화 인프라를 지분으로 직접 지배하세요.
                     </p>
                 </div>
-                <div class="footer-col">
-                    <h4>메뉴 맵</h4>
-                    <ul>
-                        <li><a href="#dashboard">대시보드</a></li>
-                        <li><a href="#market">시장 기회 구조</a></li>
-                        <li><a href="#features">플랫폼 모델</a></li>
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-4">메뉴 맵</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="#market" class="hover:text-white transition">시장 기회 구조</a></li>
+                        <li><a href="#features" class="hover:text-white transition">플랫폼 모델</a></li>
+                        <li><a href="#tokenomics" class="hover:text-white transition">토크노믹스</a></li>
                     </ul>
                 </div>
-                <div class="footer-col">
-                    <h4>노드 유틸리티</h4>
-                    <ul>
-                        <li><a href="#process">참여 프로세스</a></li>
-                        <li><a href="#">정산 기준: XNOT</a></li>
-                        <li><a href="#">리스크 고지서</a></li>
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-4">노드 유틸리티</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="#process" class="hover:text-white transition">참여 프로세스</a></li>
+                        <li><span class="text-blue-400">정산 기준: XNOT</span></li>
+                        <li><a href="#" class="hover:text-white transition">리스크 고지서</a></li>
                     </ul>
                 </div>
-                <div class="footer-col">
-                    <h4>글로벌 DAO 커널</h4>
-                    <ul>
-                        <li><a href="#">공식 홈페이지 가이드</a></li>
-                        <li><a href="#">Telegram: @TonTV</a></li>
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-4">글로벌 DAO 커널</h4>
+                    <ul class="space-y-2 text-xs text-gray-500">
+                        <li><a href="#" class="hover:text-white transition">공식 홈페이지 가이드</a></li>
+                        <li><span class="text-blue-400"><i class="fa-brands fa-telegram mr-1"></i>Telegram: @TonTV</span></li>
                     </ul>
                 </div>
             </div>
 
-            <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; font-size: 13px; color: var(--text-muted); line-height: 1.6;">
-                <p>주관: <b>TonGram Ventures Group</b> (한국 주도 · 톤체인 생태계 확산 DAO)</p>
-                <p>플랫폼: <b>TON Corporation Co., Ltd.</b> (베트남 호치민, Ho Chi Minh City) · CEO Kim Man Ho</p>
-                <p style="margin-top: 12px; font-size: 11px; color: #475569;">© 2026 TON TV Node Distribution Foundation. All Rights Reserved. 본 사이트 정보는 투자 권유가 아닙니다.</p>
+            <div class="border-t border-gray-900 pt-8 text-xs text-gray-600 space-y-1.5 leading-relaxed">
+                <p>주관: <b class="text-gray-400">TonGram Ventures Group</b> (한국 주도 · 톤체인 생태계 확산 DAO)</p>
+                <p>플랫폼: <b class="text-gray-400">TON Corporation Co., Ltd.</b> (베트남 호치민, Ho Chi Minh City) · CEO Kim Man Ho</p>
+                <p class="pt-2 text-[11px] text-gray-700">© 2026 TON TV Node Distribution Foundation. All Rights Reserved. 본 사이트 정보는 투자 권유가 아닙니다.</p>
             </div>
         </div>
     </footer>
 
-    <div id="dao-join-modal">
-        <div class="modal-content">
-            <span onclick="closeModal()" style="position: absolute; top: 24px; right: 24px; color: #8A99AD; cursor: pointer; font-size: 20px;">✕</span>
-            <div style="text-align: center; margin-bottom: 24px;">
-                <div style="font-size: 32px; margin-bottom: 12px;">🏛️</div>
-                <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">TON TV DAO 멤버 가입</h3>
-                <p style="color: #8A99AD; font-size: 14px; line-height: 1.5;">인프라 기여 정산 권한을 확보하기 위해 텔레그램 위젯 연동으로 가입을 시작합니다.</p>
-            </div>
-            
-            <div style="display: flex; flex-direction: column; gap: 20px; text-align: left;">
-                <div>
-                    <label style="display: block; font-size: 13px; color: #8A99AD; margin-bottom: 8px;">DAO 내 기여 희망 분야 설정</label>
-                    <select id="contributor-role" style="width: 100%; background: #0A0D14; border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 10px; color: #fff; font-size: 15px; outline: none;">
-                        <option value="Node Holder">Node Holder (인프라 및 트래픽 검증 기여)</option>
-                        <option value="Content Creator">Content Creator (숏폼 드라마 미디어 제작)</option>
-                        <option value="Community Builder">Community Builder (모더레이션 및 마케팅 기여)</option>
-                    </select>
-                </div>
 
-                <div>
-                    <label style="display: block; font-size: 13px; color: #8A99AD; margin-bottom: 8px; text-align: center;">텔레그램 아이디 인증 및 권한 제공</label>
-                    <div class="widget-wrapper">
-                        <script async
-                            src="https://telegram.org/js/telegram-widget.js?22"
-                            data-telegram-login="TonTVNodeBot"
-                            data-size="large"
-                            data-auth-url="https://node.tontv.com/api/auth/telegram"
-                            data-request-access="write">
-                        </script>
+    <div id="step1Modal" class="custom-modal">
+        <div class="glass-card w-full max-w-md rounded-2xl overflow-hidden border border-gray-800 shadow-2xl">
+            <div class="px-6 py-4 bg-gray-900/80 border-b border-gray-800 flex justify-between items-center">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white text-xs font-extrabold">1</span>
+                    텔레그램 계정 인증
+                </h3>
+                <button onclick="closeModal('step1Modal')" class="text-gray-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 text-center">
+                <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                    TON TV 노드 신청 및 구매 정보 매핑을 위해<br>
+                    공식 텔레그램 계정 연동 인증이 필요합니다.
+                </p>
+                <div class="my-6 min-h-[40px] flex justify-center items-center">
+                    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="TonTVNodeBot" data-size="large" data-auth-url="https://node.tontv.com/api/auth/telegram" data-request-access="write"></script>
+                </div>
+                <div class="relative flex py-3 items-center my-4">
+                    <div class="flex-grow border-t border-gray-800"></div>
+                    <span class="flex-shrink mx-4 text-xs text-gray-500 uppercase tracking-widest">or</span>
+                    <div class="flex-grow border-t border-gray-800"></div>
+                </div>
+                <button type="button" onclick="bypassTelegramAuth()" class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 py-3 px-4 rounded-xl font-medium text-xs transition border border-gray-700 flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 로컬/도메인 인증 오류 시 임시 우회하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="step2Modal" class="custom-modal">
+        <div class="glass-card w-full max-w-md rounded-2xl overflow-hidden border border-gray-800 shadow-2xl">
+            <div class="px-6 py-4 bg-gray-900/80 border-b border-gray-800 flex justify-between items-center">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white text-xs font-extrabold">2</span>
+                    노드 신청자 정보 입력
+                </h3>
+                <button onclick="closeModal('step2Modal')" class="text-gray-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="nodeApplicationForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4">
+                <div class="bg-blue-500/5 border border-blue-500/10 rounded-xl p-3 flex items-center gap-3">
+                    <i class="fa-brands fa-telegram text-blue-400 text-xl"></i>
+                    <div class="text-left">
+                        <p class="text-xs text-gray-400">연동된 텔레그램 인증 상태</p>
+                        <p id="telegramStatusText" class="text-xs font-bold text-emerald-400">인증 성공 (다음 단계 연동 완료)</p>
                     </div>
                 </div>
-            </div>
-            <p style="font-size: 11px; color: #475569; margin-top: 16px;">위젯 인증 성공 시 멤버 데이터 매핑 후 2단계 지갑 연동으로 이동합니다.</p>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">실명 (성함)</label>
+                    <input type="text" id="userName" required placeholder="홍길동" 
+                           class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">연락처</label>
+                    <input type="tel" id="userPhone" required placeholder="010-1234-5678" 
+                           class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">신청 노드 수량 (XNOT 매핑)</label>
+                    <div class="relative">
+                        <input type="number" id="nodeQuantity" required min="1" value="1" oninput="calculatePrice(this.value)"
+                               class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">개</span>
+                    </div>
+                </div>
+                <div class="bg-gray-950 p-4 rounded-xl border border-gray-900 flex justify-between items-center">
+                    <span class="text-xs text-gray-400">총 예상 신청 금액</span>
+                    <span id="totalPriceDisplay" class="text-base font-black text-blue-400">$1,000 USD</span>
+                </div>
+                <button type="submit" id="submitBtn" class="w-full ton-gradient-bg text-white py-3.5 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 cursor-pointer">
+                    <span>데이터 저장 및 TON 지갑 연결</span>
+                    <i class="fa-solid fa-wallet"></i>
+                </button>
+            </form>
         </div>
     </div>
 
     <script>
-        let isTelegramAuthenticated = false; // 텔레그램 가입 완료 여부 스위치 변수
-        let userWalletAddress = ""; 
+        const GAS_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_GAS_ID/exec"; 
 
-        // 상단 네비 바의 지갑 연결하기 버튼 눌렀을 때
-        function connectWallet() {
-            if (!isTelegramAuthenticated) {
-                alert("📢 먼저 아래 '노드 신청 및 확정하기' 버튼을 눌러 텔레그램 DAO 멤버 가입을 완료해 주세요!");
-                document.getElementById("dashboard").scrollIntoView({ behavior: 'smooth' });
-                return;
+        function openStep1Modal() {
+            const m1 = document.getElementById('step1Modal');
+            if(m1) {
+                m1.classList.add('active');
+                document.body.style.overflow = 'hidden';
             }
-            triggerWalletConnection();
         }
 
-        // 메인 화면의 대형 '노드 신청 및 확정하기' 버튼 클릭 시 실행
-        function buyNode() {
-            // 조건 없이 팝업 모달창 오픈
-            document.getElementById("dao-join-modal").style.display = "flex";
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
         }
 
-        function closeModal() {
-            document.getElementById("dao-join-modal").style.display = "none";
+        function bypassTelegramAuth() {
+            document.getElementById('telegramStatusText').innerText = "인증 완료 (임시 우회 적용됨)";
+            const m1 = document.getElementById('step1Modal');
+            const m2 = document.getElementById('step2Modal');
+            if(m1) m1.classList.remove('active');
+            if(m2) m2.classList.add('active');
         }
 
-        // 지갑 연결 실행부
-        function triggerWalletConnection() {
-            alert("🔗 TON 체인 지갑(Tonkeeper, MyTonWallet 등) 인증 팝업을 성공적으로 호출합니다.");
-            userWalletAddress = "UQAz_DAO_Member_TON_Wallet_88dB"; 
+        function calculatePrice(quantity) {
+            const qty = parseInt(quantity) || 0;
+            const total = qty * 1000;
+            document.getElementById('totalPriceDisplay').innerText = `$${total.toLocaleString()} USD`;
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnText = submitBtn.innerHTML;
             
-            const headerBtn = document.getElementById("main-wallet-btn");
-            headerBtn.innerText = "UQAz...88dB 연결됨";
-            headerBtn.style.borderColor = "var(--primary-glow)";
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 신청 데이터 전송 중...`;
 
-            alert(`🏛️ 축하합니다!\n\n텔레그램 계정 신원과 온체인 지갑 주소 매핑이 완료되어 TON TV DAO 정식 멤버십 노드 신청이 완전히 최종 확정되었습니다!`);
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+            const quantity = document.getElementById('nodeQuantity').value;
+
+            const payload = {
+                name: name,
+                phone: phone,
+                quantity: quantity,
+                timestamp: new Date().toISOString(),
+                brand: "XNOT"
+            };
+
+            try {
+                await fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.error("전송 무시:", error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                closeModal('step2Modal');
+
+                alert(`[신청 데이터 등록 완료]\n\n성함: ${name}\n수량: ${quantity} 개 (XNOT 매핑)\n\n확인을 누르면 'TON Wallet' 연동 창으로 이동합니다.`);
+                window.open("https://ton.org/wallets", "_blank", "width=500,height=600");
+            }
         }
-
-        /* [개발자 참고용 주석]
-           실제 텔레그램 로그인 위젯은 유저가 인증에 성공하면 
-           data-auth-url("https://node.tontv.com/api/auth/telegram")에 정의된 백엔드로 인증 데이터를 쏩니다.
-           브라우저 프론트 테스트 환경에서 지갑 연동으로 강제 승인 전환을 테스트해보고 싶으시다면,
-           콘솔창에 `isTelegramAuthenticated = true;`를 입력하신 후 상단 지갑 버튼을 누르시면 흐름을 미리 보실 수 있습니다.
-        */
     </script>
 </body>
 </html>
