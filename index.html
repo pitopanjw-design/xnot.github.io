@@ -2,9 +2,6 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TON TV (XNOT) Node Sales</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -13,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         body {
             font-family: 'Inter', 'Noto Sans KR', sans-serif;
@@ -65,11 +64,6 @@
                 <a href="#process" class="hover:text-white transition">참여 프로세스</a>
                 <a href="#roadmap" class="hover:text-white transition">로드맵</a>
             </nav>
-            <div>
-                <button onclick="openStep1Modal()" class="ton-gradient-bg text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:opacity-90 transition shadow-lg shadow-blue-500/20 cursor-pointer">
-                    지금 노드 신청하기
-                </button>
-            </div>
         </div>
     </header>
 
@@ -303,7 +297,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
                 <div class="space-y-4">
-                    <div class="text-xl font-black text-white tracking-wider">TON <span class="text-blue-400">TV</span></div>
+                    <div class="text-xl font-black text-white tracking-wider">Tone<span class="text-blue-400">TV</span></div>
                     <p class="text-xs text-gray-500 leading-relaxed">
                         시청이 자산이 되는 시대, 숏폼 드라마의 대중화 인프라를 지분으로 직접 지배하세요.
                     </p>
@@ -398,28 +392,51 @@
                     <input type="tel" id="userPhone" required placeholder="010-1234-5678" 
                            class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
                 </div>
+                
                 <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5">추천인 이름 <span class="text-gray-600 font-normal">(선택)</span></label>
+                    <input type="text" id="userReferrer" placeholder="추천인 성함 입력" 
+                           class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
+                </div>
+
+                <div id="quantityWrapper">
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5">신청 노드 수량 (XNOT 매핑)</label>
                     <div class="relative">
-                        <input type="number" id="nodeQuantity" required min="1" value="1" oninput="calculatePrice(this.value)"
+                        <input type="number" id="nodeQuantity" min="1" value="1" oninput="calculatePrice(this.value)"
                                class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition">
                         <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">개</span>
                     </div>
                 </div>
-                <div class="bg-gray-950 p-4 rounded-xl border border-gray-900 flex justify-between items-center">
+
+                <div class="bg-gray-900/50 p-3.5 rounded-xl border border-gray-800 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-gray-300">나중에 노드 신청하기</p>
+                        <p class="text-[11px] text-gray-500 mt-0.5">지금은 가입만 진행하고 노드는 나중에 구매합니다.</p>
+                    </div>
+                    <input type="checkbox" id="buyLaterCheck" onchange="toggleBuyLater(this.checked)" 
+                           class="w-5 h-5 accent-blue-500 cursor-pointer">
+                </div>
+
+                <div id="priceDisplayWrapper" class="bg-gray-950 p-4 rounded-xl border border-gray-900 flex justify-between items-center">
                     <span class="text-xs text-gray-400">총 예상 신청 금액</span>
                     <span id="totalPriceDisplay" class="text-base font-black text-blue-400">$1,000 USD</span>
                 </div>
+                
                 <button type="submit" id="submitBtn" class="w-full ton-gradient-bg text-white py-3.5 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 cursor-pointer">
-                    <span>데이터 저장 및 TON 지갑 연결</span>
-                    <i class="fa-solid fa-wallet"></i>
+                    <span id="submitBtnText">데이터 저장 및 TON 지갑 연결</span>
+                    <i class="fa-solid fa-wallet" id="submitBtnIcon"></i>
                 </button>
             </form>
         </div>
     </div>
 
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_GAS_ID/exec"; 
+        // ⚠️ 여기에 복사한 Supabase 프로젝트 URL과 Anon API 키를 넣어주세요.
+        const SUPABASE_URL = "https://xjoyauojepvgevlzycth.supabase.co/rest/v1/"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqb3lhdW9qZXB2Z2V2bHp5Y3RoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NTI0MDksImV4cCI6MjA5NjMyODQwOX0.Y0vE5zD3VbhCdvk_eQ9ugNzb6OnV5RYkg01ODZsLpt0";
+
+        // Supabase 클라이언트 웹 초기화
+        const supabase = SUPABASE.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         function openStep1Modal() {
             const m1 = document.getElementById('step1Modal');
@@ -451,42 +468,79 @@
             document.getElementById('totalPriceDisplay').innerText = `$${total.toLocaleString()} USD`;
         }
 
+        function toggleBuyLater(isChecked) {
+            const qtyInput = document.getElementById('nodeQuantity');
+            const qtyWrapper = document.getElementById('quantityWrapper');
+            const priceWrapper = document.getElementById('priceDisplayWrapper');
+            const btnText = document.getElementById('submitBtnText');
+            const btnIcon = document.getElementById('submitBtnIcon');
+
+            if(isChecked) {
+                qtyInput.value = 0;
+                qtyInput.disabled = true;
+                qtyWrapper.style.opacity = "0.4";
+                priceWrapper.style.opacity = "0.4";
+                document.getElementById('totalPriceDisplay').innerText = `$0 USD`;
+                btnText.innerText = "멤버십 가입 완료하기";
+                btnIcon.className = "fa-solid fa-check";
+            } else {
+                qtyInput.value = 1;
+                qtyInput.disabled = false;
+                qtyWrapper.style.opacity = "1";
+                priceWrapper.style.opacity = "1";
+                calculatePrice(1);
+                btnText.innerText = "데이터 저장 및 TON 지갑 연결";
+                btnIcon.className = "fa-solid fa-wallet";
+            }
+        }
+
+        // Supabase DB 'userlist' 테이블 저장 핸들러
         async function handleFormSubmit(event) {
             event.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
             const originalBtnText = submitBtn.innerHTML;
             
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 신청 데이터 전송 중...`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin mr-2"></i> 데이터 안전하게 저장 중...`;
 
             const name = document.getElementById('userName').value;
             const phone = document.getElementById('userPhone').value;
-            const quantity = document.getElementById('nodeQuantity').value;
-
-            const payload = {
-                name: name,
-                phone: phone,
-                quantity: quantity,
-                timestamp: new Date().toISOString(),
-                brand: "XNOT"
-            };
+            const referrer = document.getElementById('userReferrer').value || "없음";
+            const buyLater = document.getElementById('buyLaterCheck').checked;
+            const quantity = buyLater ? 0 : (document.getElementById('nodeQuantity').value || 1);
 
             try {
-                await fetch(GAS_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                // Supabase 백엔드 실시간 insert 트랜잭션 수행
+                const { data, error } = await supabase
+                    .from('userlist')
+                    .insert([
+                        { 
+                            brand: 'XNOT',
+                            name: name, 
+                            phone: phone, 
+                            referrer: referrer, 
+                            quantity: parseInt(quantity), 
+                            buy_later: buyLater 
+                        }
+                    ]);
+
+                if (error) throw error;
+
+                closeModal('step2Modal');
+                
+                if(buyLater) {
+                    alert(`[DB 등록 완료]\n\n성함: ${name}\n추천인: ${referrer}\n\n노드 신청 없이 초기 멤버십 대기열에 안전하게 등록되었습니다.`);
+                } else {
+                    alert(`[DB 등록 완료]\n\n성함: ${name}\n추천인: ${referrer}\n수량: ${quantity} 개 (XNOT 매핑)\n\n확인을 누르면 'TON Wallet' 결제 연동 창으로 이동합니다.`);
+                    window.open("https://ton.org/wallets", "_blank", "width=500,height=600");
+                }
+
             } catch (error) {
-                console.error("전송 무시:", error);
+                console.error("Supabase 데이터 전송 오류:", error);
+                alert("데이터베이스 서버와 통신 중 오류가 발생했습니다. 키 설정을 확인해 주세요.");
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnText;
-                closeModal('step2Modal');
-
-                alert(`[신청 데이터 등록 완료]\n\n성함: ${name}\n수량: ${quantity} 개 (XNOT 매핑)\n\n확인을 누르면 'TON Wallet' 연동 창으로 이동합니다.`);
-                window.open("https://ton.org/wallets", "_blank", "width=500,height=600");
             }
         }
     </script>
