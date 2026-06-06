@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tontv - Node</title>
     <style>
-        /* tontv 특유의 고급스러운 다크 테마 배경 설정 */
+        /* [기본 스타일] tontv 특유의 고급스러운 다크 테마 */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             font-family: 'Malgun Gothic', sans-serif;
-            background-color: #0f172a; /* 짙은 네이비 블루 */
+            background-color: #0f172a; /* 아주 짙은 네이비 */
             color: #f8fafc;
+            overflow: hidden; /* 모달 떴을 때 배경 스크롤 방지 */
         }
 
-        /* 중앙 정렬 레이아웃 */
+        /* ======================================================
+           [1단계] 첫 프론트엔드 메인 화면 영역 (무조건 먼저 보임)
+           ====================================================== */
         .main-hero {
             display: flex;
             flex-direction: column;
@@ -27,28 +30,26 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); /* 입체감 있는 배경 */
         }
 
-        /* 로고 스타일 */
+        /* 멋진 로고 폰트 스타일 */
         .brand-logo {
-            font-size: 56px;
+            font-size: 48px;
             font-weight: bold;
             color: #38bdf8; /* tontv 시그니처 블루 */
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
         }
 
-        /* 메인 타이틀 */
         .hero-title {
-            font-size: 26px;
+            font-size: 24px;
             color: #f1f5f9;
-            margin-bottom: 18px;
+            margin-bottom: 15px;
             font-weight: normal;
         }
 
-        /* 서브 설명글 */
         .hero-desc {
             font-size: 16px;
             color: #94a3b8;
@@ -57,33 +58,170 @@
             max-width: 500px;
         }
 
-        /* 텔레그램 연동 버튼 */
+        /* 텔레그램 인증 버튼 (메인 화면의 주인공) */
         .hero-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background-color: #0088cc; /* 텔레그램 공식 블루 */
+            background-color: #0088cc;
             color: white;
             border: none;
-            padding: 18px 40px;
+            padding: 18px 36px;
             font-size: 18px;
             font-weight: bold;
-            border-radius: 50px;
+            border-radius: 50px; /* 둥근 버튼 */
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
             text-decoration: none;
         }
         
-        /* 버튼 마우스 호버 효과 */
         .hero-btn:hover {
             background-color: #0077b5;
-            transform: translateY(-2px);
+            transform: translateY(-2px); /* 살짝 떠오르는 효과 */
             box-shadow: 0 8px 25px rgba(0, 136, 204, 0.5);
         }
 
         .hero-btn:active {
             transform: translateY(1px);
+        }
+
+        /* ======================================================
+           [2단계] 회원 정보 입력 모달 영역 (평소에는 완전히 숨김)
+           ====================================================== */
+        .modal-overlay {
+            display: none; /* ⭐ 초기 상태: 무조건 숨김 ⭐ */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* 배경을 어둡게 */
+            z-index: 1000; /* 메인 화면보다 위에 뜨도록 */
+            justify-content: center;
+            align-items: center;
+            opacity: 0; /* 서서히 나타나는 효과용 */
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px); /* 배경 흐리게 */
+        }
+
+        /* 모달이 활성화되었을 때의 클래스 */
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #1e293b;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            position: relative;
+            transform: translateY(-20px); /* 위에서 아래로 떨어지는 효과용 */
+            transition: transform 0.3s ease;
+            border: 1px solid #334155;
+        }
+
+        /* 활성화되었을 때 모달 콘텐츠 위치 */
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        /* 모달 닫기 버튼 */
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .modal-header h2 {
+            text-align: center;
+            color: #38bdf8;
+            margin: 0 0 30px 0;
+            font-size: 24px;
+        }
+
+        /* 폼 스타일 */
+        .input-group { margin-bottom: 22px; }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #334155;
+            background-color: #0f172a;
+            color: white;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        /* 약관 영역 */
+        .terms-group {
+            margin: 25px 0;
+            padding: 18px;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+        }
+        .terms-text {
+            font-size: 13px;
+            color: #94a3b8;
+            height: 100px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+            padding: 10px;
+            background: #1e293b;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+        .checkbox-label {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #cbd5e1;
+        }
+        .checkbox-label input {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* 최종 가입 버튼 */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background-color: #10b981; /* 성공의 초록색 */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover {
+            background-color: #059669;
         }
     </style>
 </head>
@@ -97,13 +235,102 @@
             아래 버튼을 통해 텔레그램 본인 확인 후 신청이 가능합니다.
         </p>
         
-        <button type="button" class="hero-btn" onclick="alert('텔레그램 인증 로직 준비 중입니다.')">
+        <button type="button" class="hero-btn" onclick="openNodeModal()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="margin-right: 10px; vertical-align: middle;">
                 <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 8.8C16.49 9.53 13.51 22.18 13.51 22.18C13.51 22.18 13.34 22.35 13.13 22.34C12.92 22.33 12.74 22.14 12.74 22.14L9.04 19.34L7.25 21.05C7.11 21.19 6.94 21.24 6.8 21.22L7.33 16.4L15.96 8.56C16.08 8.45 16.08 8.29 15.93 8.35C15.78 8.41 11.23 11.31 11.23 11.31L6.75 9.92C6.75 9.92 6.54 9.85 6.52 9.68C6.5 9.51 6.72 9.4 6.72 9.4L20.15 4.19C20.15 4.19 20.39 4.09 20.53 4.23C20.67 4.37 20.63 4.67 20.63 4.67L16.64 8.8Z" fill="white"/>
             </svg>
             텔레그램 인증 및 노드 신청
         </button>
     </div>
+
+    <div class="modal-overlay" id="nodeModal">
+        <div class="modal-content">
+            
+            <button class="close-modal" onclick="closeNodeModal()">&times;</button>
+            
+            <div class="modal-header">
+                <h2>노드 신청 정보 입력</h2>
+            </div>
+            
+            <form id="signupForm" action="https://script.google.com/macros/s/AKfycby9iDAPz5poIwoPlaWmR9argoVi3QqrIf_ZlOuoerWmO1Piub_Sy6Oji1X0XW-a5s8GXw/exec" method="POST">
+                
+                <div class="input-group">
+                    <label for="userName">이름</label>
+                    <input type="text" id="userName" name="userName" placeholder="본명을 입력하세요" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="userPhone">핸드폰 번호</label>
+                    <input type="tel" id="userPhone" name="userPhone" placeholder="010-1234-5678" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="referralCode">추천인 코드</label>
+                    <input type="text" id="referralCode" name="referralCode" placeholder="추천인 코드 입력 (선택)">
+                </div>
+
+                <div class="terms-group">
+                    <label class="checkbox-label" style="margin-bottom: 10px; font-weight: bold;">투자 약관</label>
+                    <div class="terms-text">
+                        제 1 조 (목적) 본 약관은 tontv 노드 권한 신청 및 이에 수반되는 투자 참여 조항과 관련하여 회원과 회사 간의 책임 권리를 규정함을 목적으로 합니다...<br><br>
+                        (주요 내용 생략) ... 본 약관에 동의함으로써 회원은 노드 운영에 대한 책임을 이해하고 이에 따른 투자에 참여함을 확약합니다.
+                    </div>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="agreeTerms" name="agreeTerms" value="동의함" required>
+                        투자 약관 내용을 확인했으며 이에 동의합니다. (필수)
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">최종 신청 및 가입 완료</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM 요소 가져오기
+        const modal = document.getElementById('nodeModal');
+        const form = document.getElementById('signupForm');
+
+        // [함수] 모달 열기 (메인 버튼 클릭 시 실행)
+        function openNodeModal() {
+            // ⭐ 실제 서비스 시 여기에 텔레그램 인증 로직을 넣습니다.
+            // 인증 성공 callback 콜백에서 아래 코드를 실행하게 합니다.
+            
+            alert('텔레그램 본인 확인이 완료되었습니다!\n회원 정보를 입력해 주세요.');
+            
+            // 모달을 보이게 설정 (CSS 클래스 추가)
+            modal.classList.add('active');
+            // 배경 스크롤 방지
+            document.body.style.overflow = 'hidden';
+        }
+
+        // [함수] 모달 닫기 (X 버튼 클릭 시 실행)
+        function closeNodeModal() {
+            // 모달을 숨김 (CSS 클래스 제거)
+            modal.classList.remove('active');
+            // 배경 스크롤 허용
+            document.body.style.overflow = '';
+        }
+
+        // [함수] 폼 제출 이벤트 제어
+        form.addEventListener('submit', function(e) {
+            const checkbox = document.getElementById('agreeTerms');
+            if (!checkbox.checked) {
+                e.preventDefault(); // 제출 막기
+                alert('투자 약관에 동의하셔야 최종 신청이 가능합니다.');
+                return;
+            }
+            // 최종 제출 안내
+            alert('신청 정보가 안전하게 제출됩니다. 완료 페이지로 이동합니다.');
+        });
+
+        // ⭐ 중요: 모달 밖 어두운 배경을 클릭해도 모달이 닫히도록 설정
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeNodeModal();
+            }
+        });
+    </script>
 
 </body>
 </html>
