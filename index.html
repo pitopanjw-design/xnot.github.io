@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tontv - 노드 권한 신청</title>
+    <title>tontv - 메인 및 노드 권한 신청</title>
     <style>
         body {
             font-family: 'Malgun Gothic', sans-serif;
-            background-color: #0f172a; /* tontv 느낌의 세련된 다크 테마 */
+            background-color: #0f172a; /* tontv 다크 테마 */
             color: #f8fafc;
             display: flex;
             justify-content: center;
@@ -19,7 +19,7 @@
         }
         .container {
             background-color: #1e293b;
-            padding: 35px;
+            padding: 40px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             width: 100%;
@@ -27,19 +27,21 @@
             text-align: center;
         }
         h1 {
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 10px;
-            color: #38bdf8;
+            color: #38bdf8; /* 포인트 블루 */
+            font-weight: bold;
         }
         p {
             color: #94a3b8;
             font-size: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
+            line-height: 1.5;
         }
         
-        /* 1단계: 노드 신청 및 텔레그램 인증 영역 */
-        .step-auth {
-            display: block;
+        /* [1단계] 첫 프론트엔드 메인 화면 스타일 */
+        #authStep {
+            display: block; /* 첫 접속 시 이 영역만 보이게 설정 */
         }
         .telegram-btn {
             display: inline-flex;
@@ -48,14 +50,15 @@
             background-color: #0088cc;
             color: white;
             border: none;
-            padding: 16px 32px;
+            padding: 18px 32px;
             font-size: 18px;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             transition: background 0.2s, transform 0.1s;
             width: 100%;
             box-sizing: border-box;
+            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
         }
         .telegram-btn:hover {
             background-color: #0077b5;
@@ -64,12 +67,12 @@
             transform: scale(0.98);
         }
 
-        /* 2단계: 회원 정보 입력 폼 영역 (초기에는 숨김) */
-        .step-signup {
-            display: none;
+        /* [2단계] 회원 정보 입력 폼 스타일 (초기에는 절대 안 보이게 숨김) */
+        #signupStep {
+            display: none; /* 무조건 숨김 */
             text-align: left;
         }
-        .step-signup h2 {
+        #signupStep h2 {
             text-align: center;
             color: #38bdf8;
             margin-bottom: 24px;
@@ -132,7 +135,7 @@
         .submit-btn {
             width: 100%;
             padding: 14px;
-            background-color: #10b981; /* 가입 단계는 성공/완료 느낌의 초록색 */
+            background-color: #10b981;
             color: white;
             border: none;
             border-radius: 8px;
@@ -150,19 +153,19 @@
 
 <div class="container">
     
-    <div id="authStep" class="step-auth">
+    <div id="authStep">
         <h1>tontv Node</h1>
-        <p>노드 권한을 신청하기 위해 텔레그램 인증을 완료해 주세요.</p>
+        <p>tontv 생태계에 참여하신 것을 환영합니다.<br>아래 버튼을 눌러 텔레그램 인증 후 노드 권한을 신청하세요.</p>
         
-        <button type="button" class="telegram-btn" onclick="simulateTelegramAuth()">
+        <button type="button" class="telegram-btn" onclick="runTelegramAuth()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="margin-right: 8px; vertical-align: middle;">
                 <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 8.8C16.49 9.53 13.51 22.18 13.51 22.18C13.51 22.18 13.34 22.35 13.13 22.34C12.92 22.33 12.74 22.14 12.74 22.14L9.04 19.34L7.25 21.05C7.11 21.19 6.94 21.24 6.8 21.22L7.33 16.4L15.96 8.56C16.08 8.45 16.08 8.29 15.93 8.35C15.78 8.41 11.23 11.31 11.23 11.31L6.75 9.92C6.75 9.92 6.54 9.85 6.52 9.68C6.5 9.51 6.72 9.4 6.72 9.4L20.15 4.19C20.15 4.19 20.39 4.09 20.53 4.23C20.67 4.37 20.63 4.67 20.63 4.67L16.64 8.8Z" fill="white"/>
             </svg>
-            텔레그램 인증 후 노드 신청하기
+            텔레그램 인증 및 노드 신청
         </button>
     </div>
 
-    <div id="signupStep" class="step-signup">
+    <div id="signupStep">
         <h2>노드 신청 정보 입력</h2>
         
         <form id="signupForm" action="https://script.google.com/macros/s/AKfycby9iDAPz5poIwoPlaWmR9argoVi3QqrIf_ZlOuoerWmO1Piub_Sy6Oji1X0XW-a5s8GXw/exec" method="POST">
@@ -179,7 +182,7 @@
 
             <div class="input-group">
                 <label for="referralCode">추천인 코드</label>
-                <input type="text" id="referralCode" name="referralCode" placeholder="추천인 코드가 있다면 입력 (선택)">
+                <input type="text" id="referralCode" name="referralCode" placeholder="추천인 코드 입력 (선택)">
             </div>
 
             <div class="terms-group">
@@ -200,17 +203,19 @@
 </div>
 
 <script>
-    // [함수] 텔레그램 인증 성공 시 화면을 전환하는 로직
-    function simulateTelegramAuth() {
-        // 실제 연동 시에는 인증 창 팝업 후 성공 callback 콜백을 통해 이 함수가 실행되게 합니다.
+    // 페이지 로드 시 확실하게 첫 단계만 보이도록 초기화
+    document.getElementById('authStep').style.display = 'block';
+    document.getElementById('signupStep').style.display = 'none';
+
+    // 버튼을 클릭했을 때 실행되는 함수
+    function runTelegramAuth() {
         alert('텔레그램 본인 확인이 완료되었습니다!\n회원 정보를 입력해 주세요.');
         
-        // 1단계 인증 버튼 숨기고, 2단계 가입 폼 보여주기
+        // 메인 화면을 숨기고 가입 폼을 보여줌
         document.getElementById('authStep').style.display = 'none';
         document.getElementById('signupStep').style.display = 'block';
     }
 
-    // 폼 제출 이벤트 제어
     document.getElementById('signupForm').addEventListener('submit', function(e) {
         const checkbox = document.getElementById('agreeTerms');
         if (!checkbox.checked) {
@@ -218,9 +223,7 @@
             alert('투자 약관에 동의하셔야 최종 신청이 가능합니다.');
             return;
         }
-        
-        // 정보가 성공적으로 전송될 것임을 안내 (구글 앱스 스크립트로 폼이 전송됨)
-        alert('신청 정보가 안전하게 제출됩니다. 완료 페이지로 이동합니다.');
+        alert('신청 정보가 안전하게 제출됩니다.');
     });
 </script>
 
