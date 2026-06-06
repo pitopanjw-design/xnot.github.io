@@ -3,79 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TON TV Node Sale</title>
-    <link rel="stylesheet" href="style.css">
+    <title>TON TV Node Sale | Infrastructure Ownership</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* [1. 디자인 시스템 - 슬라이드 1~6 디자인 복구] */
+        :root {
+            --primary: #00E676; /* 네온 그린 */
+            --secondary: #0098EA; /* TON 블루 */
+            --bg-dark: #0A0D14;
+            --card-bg: #141A29;
+            --text-main: #FFFFFF;
+            --text-muted: #8A99AD;
+            --accent-red: #FF3D00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Urbanist', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 30px; }
+        section { padding: 100px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        /* 헤더 */
+        header { background: rgba(10, 13, 20, 0.9); backdrop-filter: blur(15px); position: fixed; top: 0; width: 100%; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .nav-inner { height: 80px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 700; font-family: 'Poppins'; }
+        .logo span { color: var(--primary); }
+
+        /* 히어로 섹션 (슬라이드 1 & 2) */
+        .hero-wrap { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; padding-top: 50px; }
+        .hero-badge { display: inline-block; background: rgba(0, 230, 118, 0.1); color: var(--primary); padding: 6px 16px; border-radius: 50px; font-size: 14px; font-weight: 700; margin-bottom: 25px; }
+        .hero-title { font-size: 56px; font-weight: 700; line-height: 1.2; margin-bottom: 25px; font-family: 'Poppins'; }
+        .hero-title span { color: var(--primary); }
+        
+        .dashboard-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 35px; }
+        .stat-box { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: 18px; }
+        .stat-label { font-size: 13px; color: var(--text-muted); margin-bottom: 5px; display: block; }
+        .stat-val { font-size: 26px; font-weight: 700; }
+        .stat-val.red { color: var(--accent-red); }
+
+        .btn-apply { 
+            width: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); 
+            color: #000; font-weight: 700; font-size: 18px; padding: 20px; border: none; border-radius: 16px; cursor: pointer; 
+            transition: 0.3s; box-shadow: 0 10px 25px rgba(0, 230, 118, 0.2);
+        }
+        .btn-apply:hover { transform: translateY(-3px); }
+
+        .mockup-img { width: 100%; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* 시장 분석 (슬라이드 3) */
+        .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 50px; }
+        .market-card { background: var(--card-bg); padding: 40px; border-radius: 22px; border: 1px solid rgba(255,255,255,0.05); }
+        .m-icon { color: var(--primary); font-size: 32px; margin-bottom: 20px; }
+
+        /* 특징 (슬라이드 4) */
+        .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 50px; }
+        .feature-card { background: var(--card-bg); padding: 25px; border-radius: 18px; text-align: center; }
+        .f-icon { color: var(--secondary); font-size: 28px; margin-bottom: 15px; }
+
+        /* 참여 가이드 (슬라이드 5) */
+        .process-wrap { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; margin-top: 50px; }
+        .step-item { display: flex; gap: 20px; background: rgba(255,255,255,0.02); padding: 25px; border-radius: 15px; border-left: 4px solid var(--primary); margin-bottom: 15px; }
+        .step-num { font-weight: 700; color: var(--primary); }
+
+        /* [2. 모달 스타일 - 항상 숨김 상태로 시작] */
+        .modal-overlay {
+            display: none; /* 기본 숨김 */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+            z-index: 2000; align-items: center; justify-content: center;
+        }
+        .modal-box {
+            background: #141A29; border: 1px solid rgba(255,255,255,0.1);
+            width: 90%; max-width: 480px; padding: 50px; border-radius: 30px; text-align: center; position: relative;
+        }
+        .close-btn { position: absolute; top: 25px; right: 25px; cursor: pointer; color: var(--text-muted); font-size: 20px; }
+        
+        /* 폼 스타일 */
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+        .input-group input { width: 100%; padding: 15px; background: #080B12; border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 12px; outline: none; }
+        .input-group input:focus { border-color: var(--primary); }
+
+        .btn-dev-bypass { margin-top: 20px; background: none; border: 1px dashed var(--primary); color: var(--primary); padding: 8px 15px; border-radius: 10px; font-size: 11px; cursor: pointer; }
+
+        @media (max-width: 900px) { .hero-wrap, .market-grid, .feature-grid, .process-wrap { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
 
     <header>
         <div class="container nav-inner">
-            <div class="logo">Ton<span>TV</span> <small>NODE SALE</small></div>
-            <button class="btn-wallet" onclick="connectWallet()">지갑 연결하기</button>
+            <div class="logo">Ton<span>TV</span></div>
+            <button class="btn-apply" style="width: auto; padding: 10px 25px; font-size: 14px;" onclick="startProcess()">지갑 연결하기</button>
         </div>
     </header>
 
-    <section id="hero">
+    <section id="slide1">
         <div class="container hero-wrap">
-            <div class="hero-text">
-                <div class="badge">📡 텔레그램 WATCH-TO-EARN 숏폼 드라마 OTT</div>
-                <h1>시청이 <span>자산</span>이 되는 시대,<br>그 인프라를 소유하세요.</h1>
-                <p>톤티비는 텔레그램 10억 유저 위에서 작동하는 숏폼 드라마의 넷플릭스입니다.</p>
-                <button class="btn-primary" onclick="startJoinProcess()">지금 노드 신청하기 <i class="fas fa-bolt"></i></button>
-            </div>
-            <div class="mockup-area">
-                <div class="mockup-main">
-                    <img src="https://via.placeholder.com/400x800/111622/FFFFFF?text=TON+TV+APP" alt="Mockup">
-                    <div class="mining-badge">⛏️ +15 XNOT 실시간 채굴 중</div>
+            <div>
+                <div class="hero-badge">📡 텔레그램 WATCH-TO-EARN 숏폼 드라마 OTT</div>
+                <h1 class="hero-title">시청이 <span>자산</span>이 되는 시대,<br>그 인프라를 소유하세요.</h1>
+                <p style="font-size: 18px; color: var(--text-muted); margin-bottom: 40px;">톤티비는 텔레그램 10억 유저 기반 숏폼 드라마의 넷플릭스입니다.</p>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-box"><span class="stat-label">노드 1개 참여가</span><div class="stat-val red">$1,000</div></div>
+                    <div class="stat-box"><span class="stat-label">1차 잔여 수량</span><div class="stat-val">812<span> / 3,000</span></div></div>
                 </div>
+
+                <button class="btn-apply" onclick="startProcess()">지금 노드 신청하기 <i class="fas fa-bolt"></i></button>
+            </div>
+            <div>
+                <img src="https://via.placeholder.com/500x600/141A29/FFFFFF?text=TON+TV+APP" class="mockup-img">
             </div>
         </div>
     </section>
 
-    <div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeAllModals()">✕</span>
-            <h3>🏛️ DAO 멤버 인증 (1단계)</h3>
-            <p>보안을 위해 텔레그램 인증을 진행합니다.</p>
-            <div id="telegram-widget-container">
+    <section id="slide3">
+        <div class="container">
+            <h2 style="font-size: 32px; text-align: center;">지금, 미디어의 <span>무게중심</span>이 이동 중</h2>
+            <div class="market-grid">
+                <div class="market-card"><i class="fas fa-chart-line m-icon"></i><h3>$2.98B 시장</h3><p>2025 글로벌 숏폼 매출 예상.</p></div>
+                <div class="market-card"><i class="fas fa-rocket m-icon"></i><h3>추월하는 숏폼</h3><p>롱폼 OTT 다운로드 수 추월.</p></div>
+                <div class="market-card"><i class="fas fa-users-slash m-icon"></i><h3>CAC ZERO</h3><p>텔레그램 무설치 진입 혁신.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="slide4">
+        <div class="container">
+            <h2 style="font-size: 32px; text-align: center; margin-bottom: 40px;">숏폼 드라마의 <span>넷플릭스</span></h2>
+            <div class="feature-grid">
+                <div class="feature-card"><i class="fas fa-play-circle f-icon"></i><h4>무료 무제한</h4><p>광고 기반 무료 시청.</p></div>
+                <div class="feature-card"><i class="fas fa-crown f-icon"></i><h4>프리미엄</h4><p>월 $20 광고 제거.</p></div>
+                <div class="feature-card"><i class="fas fa-coins f-icon"></i><h4>W2E 채굴</h4><p>시청하며 <b>XNOT</b> 적립.</p></div>
+                <div class="feature-card"><i class="fas fa-paper-plane f-icon"></i><h4>텔레그램</h4><p>이미 쓰는 계정 그대로.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-box">
+            <span class="close-btn" onclick="closeModals()">✕</span>
+            <h3 style="margin-bottom: 10px;">🏛️ DAO 멤버 인증 (1단계)</h3>
+            <p>보안 및 연동을 위해 텔레그램 인증을 진행합니다.</p>
+            <div style="margin: 30px 0; display: flex; justify-content: center;">
                 <script async src="https://telegram.org/js/telegram-widget.js?22" 
                     data-telegram-login="TonTVNodeBot" 
                     data-size="large" 
                     data-onauth="onTelegramAuth(user)" 
                     data-request-access="write"></script>
             </div>
-            <button class="btn-dev-only" onclick="onTelegramAuth({id: '123', first_name: 'TestUser', username: 'test_tg'})">[테스트용] 인증 건너뛰기</button>
+            <button class="btn-dev-bypass" onclick="onTelegramAuth({id: 'test', username: 'Tester'})">[테스트] 인증 건너뛰기</button>
         </div>
     </div>
 
-    <div id="form-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeAllModals()">✕</span>
-            <h3>📝 회원 정보 입력 (2단계)</h3>
-            <p>노드 배정 및 관리를 위한 정보를 입력해 주세요.</p>
-            <form id="node-apply-form">
-                <input type="hidden" id="tg-id" name="tg_id">
-                <input type="hidden" id="tg-name" name="tg_name">
+    <div id="form-modal" class="modal-overlay">
+        <div class="modal-box">
+            <span class="close-btn" onclick="closeModals()">✕</span>
+            <h3 style="margin-bottom: 10px;">📝 회원 정보 입력 (2단계)</h3>
+            <p>구글 폼에 등록될 정보를 입력해 주세요.</p>
+            <form id="google-sheet-form" style="margin-top: 25px;">
+                <input type="hidden" id="entry_tg_id" name="tg_id">
+                <input type="hidden" id="entry_tg_user" name="tg_user">
                 
                 <div class="input-group">
                     <label>성함 (실명)</label>
-                    <input type="text" name="user_name" required placeholder="홍길동">
+                    <input type="text" id="user_name" name="user_name" required placeholder="홍길동">
                 </div>
                 <div class="input-group">
                     <label>연락처</label>
-                    <input type="tel" name="user_phone" required placeholder="010-0000-0000">
+                    <input type="tel" id="user_phone" name="user_phone" required placeholder="010-0000-0000">
                 </div>
                 <div class="input-group">
                     <label>참여 희망 노드 수량</label>
-                    <input type="number" name="node_count" value="1" min="1" required>
+                    <input type="number" id="node_count" name="node_count" value="1" min="1" required>
                 </div>
-                <button type="submit" class="btn-primary">신청 완료 및 지갑 연동하기</button>
+                <button type="submit" class="btn-apply" id="submit-btn">신청 완료 및 지갑 연동</button>
             </form>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // [프로세스 제어 자바스크립트]
+        
+        // 1. 노드 신청 버튼 클릭 시
+        function startProcess() {
+            document.getElementById('auth-modal').style.display = 'flex';
+        }
+
+        function closeModals() {
+            document.getElementById('auth-modal').style.display = 'none';
+            document.getElementById('form-modal').style.display = 'none';
+        }
+
+        // 2. 텔레그램 인증 성공 시 실행되는 콜백
+        function onTelegramAuth(user) {
+            console.log("인증 성공:", user);
+            // 인증 정보를 폼의 숨겨진 필드에 저장
+            document.getElementById('entry_tg_id').value = user.id;
+            document.getElementById('entry_tg_user').value = user.username || user.first_name;
+            
+            // 모달 전환 (인증 창 닫고 폼 창 열기)
+            document.getElementById('auth-modal').style.display = 'none';
+            document.getElementById('form-modal').style.display = 'flex';
+        }
+
+        // 3. 회원 정보 제출 시 (구글 앱스 스크립트로 전송)
+        document.getElementById('google-sheet-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "전송 중...";
+            btn.disabled = true;
+
+            // [중요] 배포하신 구글 앱스 스크립트 웹앱 URL을 여기에 입력하세요
+            const GAS_URL = "https://script.google.com/macros/s/자신의_스크립트_ID/exec";
+
+            const payload = {
+                tg_id: document.getElementById('entry_tg_id').value,
+                tg_user: document.getElementById('entry_tg_user').value,
+                name: document.getElementById('user_name').value,
+                phone: document.getElementById('user_phone').value,
+                count: document.getElementById('node_count').value
+            };
+
+            try {
+                // 구글 시트로 데이터 쏘기
+                await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                alert("🎉 신청 정보가 정상적으로 등록되었습니다!\n이제 마지막 단계인 지갑 연동을 시작합니다.");
+                closeModals();
+                // 여기에 지갑 연동 함수(TonConnect 등)를 연결하세요.
+                alert("🔗 TON 지갑 연동 인증창을 호출합니다...");
+
+            } catch (err) {
+                console.error("전송 에러:", err);
+                alert("전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+                btn.innerText = "신청 완료 및 지갑 연동";
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
