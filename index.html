@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tontv - Node</title>
+    <style>
+        /* tontv 특유의 고급스러운 다크 테마 배경 설정 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #0f172a; /* 짙은 네이비 블루 */
+            color: #f8fafc;
+        }
+
+        /* 중앙 정렬 레이아웃 */
+        .main-hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* 로고 스타일 */
+        .brand-logo {
+            font-size: 56px;
+            font-weight: bold;
+            color: #38bdf8; /* tontv 시그니처 블루 */
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* 메인 타이틀 */
+        .hero-title {
+            font-size: 26px;
+            color: #f1f5f9;
+            margin-bottom: 18px;
+            font-weight: normal;
+        }
+
+        /* 서브 설명글 */
+        .hero-desc {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        /* 텔레그램 연동 버튼 */
+        .hero-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0088cc; /* 텔레그램 공식 블루 */
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
+            text-decoration: none;
+        }
+        
+        /* 버튼 마우스 호버 효과 */
+        .hero-btn:hover {
+            background-color: #0077b5;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.5);
+        }
+
+        .hero-btn:active {
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-hero">
+        <div class="brand-logo">tontv</div>
+        <h1 class="hero-title">Node 권한 신청</h1>
+        <p class="hero-desc">
+            tontv 생태계의 핵심, 노드 운영에 참여하세요.<br>
+            아래 버튼을 통해 텔레그램 본인 확인 후 신청이 가능합니다.
+        </p>
+        
+        <button type="button" class="hero-btn" onclick="alert('텔레그램 인증 로직 준비 중입니다.')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="margin-right: 10px; vertical-align: middle;">
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 8.8C16.49 9.53 13.51 22.18 13.51 22.18C13.51 22.18 13.34 22.35 13.13 22.34C12.92 22.33 12.74 22.14 12.74 22.14L9.04 19.34L7.25 21.05C7.11 21.19 6.94 21.24 6.8 21.22L7.33 16.4L15.96 8.56C16.08 8.45 16.08 8.29 15.93 8.35C15.78 8.41 11.23 11.31 11.23 11.31L6.75 9.92C6.75 9.92 6.54 9.85 6.52 9.68C6.5 9.51 6.72 9.4 6.72 9.4L20.15 4.19C20.15 4.19 20.39 4.09 20.53 4.23C20.67 4.37 20.63 4.67 20.63 4.67L16.64 8.8Z" fill="white"/>
+            </svg>
+            텔레그램 인증 및 노드 신청
+        </button>
+    </div>
+
+</body>
+</html>
