@@ -436,7 +436,7 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqb3lhdW9qZXB2Z2V2bHp5Y3RoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NTI0MDksImV4cCI6MjA5NjMyODQwOX0.Y0vE5zD3VbhCdvk_eQ9ugNzb6OnV5RYkg01ODZsLpt0";
 
         // Supabase 클라이언트 웹 초기화
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         function openStep1Modal() {
             const m1 = document.getElementById('step1Modal');
@@ -511,7 +511,7 @@
 
             try {
                 // Supabase 백엔드 실시간 insert 트랜잭션 수행
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('userlist')
                     .insert([
                         { 
